@@ -1,0 +1,1 @@
+function e(e){return`₹`+Math.round(e).toLocaleString(`en-IN`)}function t(e,t){return!t||t<=e?0:Math.round((t-e)/t*100)}export{e as n,t};
