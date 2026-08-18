@@ -10,7 +10,10 @@ export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       { title: "Sign In — BRUTAL." },
-      { name: "description", content: "Sign in to your BRUTAL. account to track orders and saved pieces." },
+      {
+        name: "description",
+        content: "Sign in to your BRUTAL. account to track orders and saved pieces.",
+      },
       { property: "og:title", content: "Sign In — BRUTAL." },
       { property: "og:description", content: "Sign in to your BRUTAL. account." },
     ],
@@ -58,7 +61,10 @@ function Login() {
       </h1>
       <p className="mt-3 text-sm text-muted-foreground">Sign in to continue.</p>
 
-      <form onSubmit={submit} className="mt-8 space-y-4 border-[3px] border-foreground p-6 brutal-shadow">
+      <form
+        onSubmit={submit}
+        className="mt-8 space-y-4 border-[3px] border-foreground p-6 brutal-shadow"
+      >
         <Field label="EMAIL" error={errors["email"]}>
           <Input
             type="email"
@@ -78,12 +84,15 @@ function Login() {
         <button
           type="button"
           className="label-xs underline"
-          onClick={() => toast("PASSWORD RESET", { description: "Reset links are not available in this demo." })}
+          onClick={() =>
+            toast("PASSWORD RESET", { description: "Reset links are not available in this demo." })
+          }
         >
           FORGOT PASSWORD?
         </button>
         <Button type="submit" variant="flare" size="lg" full disabled={loading}>
-          {loading ? "SIGNING IN…" : "Sign in"} <ArrowRight width={16} height={16} strokeWidth={3} />
+          {loading ? "SIGNING IN…" : "Sign in"}{" "}
+          <ArrowRight width={16} height={16} strokeWidth={3} />
         </Button>
         <div className="grid gap-2 pt-2">
           {["CONTINUE WITH GOOGLE", "CONTINUE WITH APPLE"].map((l) => (
@@ -91,7 +100,9 @@ function Login() {
               key={l}
               type="button"
               variant="outline"
-              onClick={() => toast("SOCIAL SIGN-IN", { description: "Not connected in this demo." })}
+              onClick={() =>
+                toast("SOCIAL SIGN-IN", { description: "Not connected in this demo." })
+              }
             >
               {l}
             </Button>

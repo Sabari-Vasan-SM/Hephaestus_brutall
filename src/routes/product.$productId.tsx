@@ -18,7 +18,9 @@ export const Route = createFileRoute("/product/$productId")({
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Product unavailable — BRUTAL." }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [{ title: "Product unavailable — BRUTAL." }, { name: "robots", content: "noindex" }],
+      };
     }
     const p = loaderData.product;
     return {
@@ -44,7 +46,9 @@ function ProductPage() {
   const [sizeError, setSizeError] = useState(false);
   const saved = inWishlist(product.id);
   const off = discountPct(product.price, product.compareAt);
-  const related = products.filter((p) => p.id !== product.id && p.category === product.category).slice(0, 4);
+  const related = products
+    .filter((p) => p.id !== product.id && p.category === product.category)
+    .slice(0, 4);
   const fallbackRelated = products.filter((p) => p.id !== product.id).slice(0, 4);
 
   const add = () => {
@@ -60,7 +64,10 @@ function ProductPage() {
 
   return (
     <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
-      <nav aria-label="Breadcrumb" className="label-xs mb-6 flex flex-wrap items-center gap-2 text-muted-foreground">
+      <nav
+        aria-label="Breadcrumb"
+        className="label-xs mb-6 flex flex-wrap items-center gap-2 text-muted-foreground"
+      >
         <Link to="/" className="hover:text-foreground">
           HOME
         </Link>
@@ -88,7 +95,14 @@ function ProductPage() {
                   active === i && "brutal-shadow-sm",
                 )}
               >
-                <img src={g} alt="" width={200} height={200} loading="lazy" className="h-full w-full object-cover" />
+                <img
+                  src={g}
+                  alt=""
+                  width={200}
+                  height={200}
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
               </button>
             ))}
           </div>
@@ -124,19 +138,32 @@ function ProductPage() {
             <span className="font-display text-4xl font-black">{inr(product.price)}</span>
             {product.compareAt && (
               <>
-                <span className="text-lg text-muted-foreground line-through">{inr(product.compareAt)}</span>
+                <span className="text-lg text-muted-foreground line-through">
+                  {inr(product.compareAt)}
+                </span>
                 <Badge tone="flare">{off}% OFF</Badge>
               </>
             )}
             <span className="label-xs ml-auto text-muted-foreground">INCL. OF ALL TAXES</span>
           </div>
 
-          <p className="mt-6 text-sm leading-relaxed text-muted-foreground">{product.description}</p>
+          <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
+            {product.description}
+          </p>
 
           <div className="mt-8">
             <div className="mb-2 flex items-center justify-between">
               <h2 className="label-xs">SIZE</h2>
-              <button type="button" className="label-xs flex items-center gap-1 underline" onClick={() => toast("SIZE GUIDE", { description: "Sizes run oversized. Take your usual size for a boxy fit, one down for regular." })}>
+              <button
+                type="button"
+                className="label-xs flex items-center gap-1 underline"
+                onClick={() =>
+                  toast("SIZE GUIDE", {
+                    description:
+                      "Sizes run oversized. Take your usual size for a boxy fit, one down for regular.",
+                  })
+                }
+              >
                 <Ruler width={12} height={12} strokeWidth={3} /> SIZE GUIDE
               </button>
             </div>
@@ -159,7 +186,11 @@ function ProductPage() {
                 </button>
               ))}
             </div>
-            {sizeError && <p className="mt-2 text-[0.7rem] font-bold uppercase text-destructive">Select a size</p>}
+            {sizeError && (
+              <p className="mt-2 text-[0.7rem] font-bold uppercase text-destructive">
+                Select a size
+              </p>
+            )}
           </div>
 
           <div className="mt-6">
@@ -212,7 +243,12 @@ function ProductPage() {
                 toast(saved ? "REMOVED FROM WISHLIST" : "SAVED TO WISHLIST");
               }}
             >
-              <Heart width={18} height={18} strokeWidth={3} className={saved ? "fill-flare text-flare" : ""} />
+              <Heart
+                width={18}
+                height={18}
+                strokeWidth={3}
+                className={saved ? "fill-flare text-flare" : ""}
+              />
             </Button>
           </div>
 
@@ -220,13 +256,18 @@ function ProductPage() {
             <InfoTile icon={<Truck width={16} height={16} strokeWidth={3} />} title="FREE SHIPPING">
               On orders over ₹4,999. Metro delivery in 48h.
             </InfoTile>
-            <InfoTile icon={<RotateCcw width={16} height={16} strokeWidth={3} />} title="14-DAY RETURNS">
+            <InfoTile
+              icon={<RotateCcw width={16} height={16} strokeWidth={3} />}
+              title="14-DAY RETURNS"
+            >
               Unworn, tags on, no questions asked.
             </InfoTile>
           </div>
 
           <div className="mt-8 border-[3px] border-foreground">
-            <h2 className="label-xs border-b-[3px] border-foreground bg-muted px-4 py-3">DETAILS & MATERIALS</h2>
+            <h2 className="label-xs border-b-[3px] border-foreground bg-muted px-4 py-3">
+              DETAILS & MATERIALS
+            </h2>
             <ul className="space-y-2 p-4 text-sm text-muted-foreground">
               {product.materials.map((m) => (
                 <li key={m} className="flex gap-2">
@@ -281,7 +322,15 @@ function ProductPage() {
   );
 }
 
-function InfoTile({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+function InfoTile({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="border-[3px] border-foreground p-4">
       <div className="label-xs flex items-center gap-2">

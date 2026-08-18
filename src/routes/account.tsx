@@ -10,7 +10,10 @@ export const Route = createFileRoute("/account")({
   head: () => ({
     meta: [
       { title: "Your Account — BRUTAL." },
-      { name: "description", content: "Manage your BRUTAL. orders, addresses, wishlist and profile." },
+      {
+        name: "description",
+        content: "Manage your BRUTAL. orders, addresses, wishlist and profile.",
+      },
       { property: "og:title", content: "Your Account — BRUTAL." },
       { property: "og:description", content: "Manage your orders and profile." },
     ],
@@ -38,10 +41,16 @@ function Account() {
         <h1 className="text-[clamp(2.2rem,9vw,4rem)]">Sign in first.</h1>
         <p className="mt-3 text-sm text-muted-foreground">Your account lives behind the door.</p>
         <div className="mt-8 flex justify-center gap-3">
-          <Link to="/login" className="label-xs border-[3px] border-foreground bg-flare px-6 py-4 text-background press brutal-shadow-sm">
+          <Link
+            to="/login"
+            className="label-xs border-[3px] border-foreground bg-flare px-6 py-4 text-background press brutal-shadow-sm"
+          >
             SIGN IN
           </Link>
-          <Link to="/signup" className="label-xs border-[3px] border-foreground px-6 py-4 press brutal-shadow-sm">
+          <Link
+            to="/signup"
+            className="label-xs border-[3px] border-foreground px-6 py-4 press brutal-shadow-sm"
+          >
             CREATE ACCOUNT
           </Link>
         </div>
@@ -140,9 +149,23 @@ function Account() {
             ) : (
               <ul className="grid gap-3">
                 {saved.map((p) => (
-                  <li key={p.id} className="flex items-center gap-3 border-[3px] border-foreground p-3">
-                    <img src={p.image} alt="" width={120} height={120} loading="lazy" className="h-16 w-16 border-2 border-foreground object-cover" />
-                    <Link to="/product/$productId" params={{ productId: p.id }} className="flex-1 font-display font-black uppercase hover:underline">
+                  <li
+                    key={p.id}
+                    className="flex items-center gap-3 border-[3px] border-foreground p-3"
+                  >
+                    <img
+                      src={p.image}
+                      alt=""
+                      width={120}
+                      height={120}
+                      loading="lazy"
+                      className="h-16 w-16 border-2 border-foreground object-cover"
+                    />
+                    <Link
+                      to="/product/$productId"
+                      params={{ productId: p.id }}
+                      className="flex-1 font-display font-black uppercase hover:underline"
+                    >
                       {p.name}
                     </Link>
                     <span className="font-display font-black">{inr(p.price)}</span>
@@ -182,11 +205,20 @@ function Account() {
 
           {tab === "SETTINGS" && (
             <div className="grid gap-3">
-              <p className="text-sm text-muted-foreground">Preferences for drop alerts and order updates.</p>
+              <p className="text-sm text-muted-foreground">
+                Preferences for drop alerts and order updates.
+              </p>
               {["DROP ALERTS", "ORDER UPDATES", "RESTOCK NOTICES"].map((s) => (
-                <label key={s} className="flex items-center justify-between border-[3px] border-foreground p-4">
+                <label
+                  key={s}
+                  className="flex items-center justify-between border-[3px] border-foreground p-4"
+                >
                   <span className="label-xs">{s}</span>
-                  <input type="checkbox" defaultChecked className="h-5 w-5 accent-[oklch(0.667_0.234_39.5)]" />
+                  <input
+                    type="checkbox"
+                    defaultChecked
+                    className="h-5 w-5 accent-[oklch(0.667_0.234_39.5)]"
+                  />
                 </label>
               ))}
             </div>

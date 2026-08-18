@@ -4,13 +4,18 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const alertVariants = cva(
-  "relative w-full rounded-lg border px-4 py-3 text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg~*]:pl-7",
+  "relative w-full rounded-none border-[3px] border-foreground p-4 text-sm brutal-shadow-sm [&>svg+div]:translate-y-[-2px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg~*]:pl-7",
   {
     variants: {
       variant: {
         default: "bg-background text-foreground",
         destructive:
-          "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive",
+          "border-foreground bg-destructive/15 text-foreground border-l-[8px] border-l-destructive [&>svg]:text-destructive",
+        warning:
+          "border-foreground bg-zap text-foreground border-l-[8px] border-l-foreground [&>svg]:text-foreground",
+        info: "border-foreground bg-smoke text-foreground border-l-[8px] border-l-foreground [&>svg]:text-foreground",
+        success:
+          "border-foreground bg-emerald-300 text-foreground border-l-[8px] border-l-emerald-600 [&>svg]:text-emerald-950",
       },
     },
     defaultVariants: {
@@ -31,7 +36,10 @@ const AlertTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<H
   ({ className, ...props }, ref) => (
     <h5
       ref={ref}
-      className={cn("mb-1 font-medium leading-none tracking-tight", className)}
+      className={cn(
+        "mb-1 font-display font-black text-sm tracking-wider uppercase leading-none",
+        className,
+      )}
       {...props}
     />
   ),
@@ -42,7 +50,11 @@ const AlertDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("text-sm [&_p]:leading-relaxed", className)} {...props} />
+  <div
+    ref={ref}
+    className={cn("text-xs sm:text-sm font-sans font-medium leading-relaxed", className)}
+    {...props}
+  />
 ));
 AlertDescription.displayName = "AlertDescription";
 

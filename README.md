@@ -859,21 +859,9 @@ The final design should immediately communicate:
 
 Make the entire application polished, production-quality, responsive, accessible, and visually consistent.
 
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://brutal-style-shop.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/4766cf14-d13b-4a0f-8665-5f1fa8fd864c).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+To run this project locally, ensure you have Node.js and npm installed:
 
 ```sh
 git clone <this-repository-url>

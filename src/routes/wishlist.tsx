@@ -7,7 +7,10 @@ export const Route = createFileRoute("/wishlist")({
   head: () => ({
     meta: [
       { title: "Your Wishlist — BRUTAL." },
-      { name: "description", content: "Everything you've saved from the BRUTAL. drop, in one place." },
+      {
+        name: "description",
+        content: "Everything you've saved from the BRUTAL. drop, in one place.",
+      },
       { property: "og:title", content: "Your Wishlist — BRUTAL." },
       { property: "og:description", content: "Everything you've saved from the drop." },
     ],
@@ -31,7 +34,11 @@ function Wishlist() {
           <h2 className="text-3xl">Nothing saved.</h2>
           <p className="mt-2 text-sm text-muted-foreground">Tap the heart on anything you like.</p>
           <div className="mt-6 flex justify-center">
-            <Link to="/shop" search={{}} className="label-xs border-[3px] border-foreground bg-zap px-6 py-4 press brutal-shadow-sm">
+            <Link
+              to="/shop"
+              search={{}}
+              className="label-xs border-[3px] border-foreground bg-zap px-6 py-4 press brutal-shadow-sm"
+            >
               BROWSE THE DROP
             </Link>
           </div>

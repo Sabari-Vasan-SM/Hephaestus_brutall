@@ -8,14 +8,24 @@ import { discountPct, inr } from "@/lib/format";
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
-export function ProductCard({ product, layout = "grid" }: { product: Product; layout?: "grid" | "list" }) {
+export function ProductCard({
+  product,
+  layout = "grid",
+}: {
+  product: Product;
+  layout?: "grid" | "list";
+}) {
   const { addToCart, toggleWishlist, inWishlist } = useStore();
   const [beat, setBeat] = useState(false);
   const saved = inWishlist(product.id);
   const off = discountPct(product.price, product.compareAt);
 
   const quickAdd = () => {
-    addToCart(product, product.sizes[Math.min(2, product.sizes.length - 1)] ?? "One Size", product.colors[0] ?? "Black");
+    addToCart(
+      product,
+      product.sizes[Math.min(2, product.sizes.length - 1)] ?? "One Size",
+      product.colors[0] ?? "Black",
+    );
     toast.success("ADDED TO CART", { description: `${product.name} — ${product.colors[0] ?? ""}` });
   };
 
@@ -63,7 +73,11 @@ export function ProductCard({ product, layout = "grid" }: { product: Product; la
           <div className="min-w-0">
             <span className="label-xs text-muted-foreground">{product.categoryLabel}</span>
             <h3 className="mt-1 truncate text-base sm:text-lg">
-              <Link to="/product/$productId" params={{ productId: product.id }} className="hover:underline">
+              <Link
+                to="/product/$productId"
+                params={{ productId: product.id }}
+                className="hover:underline"
+              >
                 {product.name}
               </Link>
             </h3>
@@ -93,7 +107,9 @@ export function ProductCard({ product, layout = "grid" }: { product: Product; la
           <span className="font-display text-xl font-black">{inr(product.price)}</span>
           {product.compareAt && (
             <>
-              <span className="text-xs text-muted-foreground line-through">{inr(product.compareAt)}</span>
+              <span className="text-xs text-muted-foreground line-through">
+                {inr(product.compareAt)}
+              </span>
               <span className="label-xs bg-flare px-1.5 py-0.5 text-background">{off}% OFF</span>
             </>
           )}

@@ -42,6 +42,12 @@ export function Navbar() {
           </Link>
 
           <nav aria-label="Main" className="ml-auto hidden items-center gap-1 lg:flex">
+            <Link
+              to="/"
+              className="label-xs border-2 border-transparent px-3 py-2 transition-colors hover:border-foreground hover:bg-zap"
+            >
+              HOME
+            </Link>
             {navLinks.map((l) => (
               <Link
                 key={l.label}
@@ -130,6 +136,13 @@ export function Navbar() {
               </button>
             </div>
             <nav className="flex-1 overflow-y-auto p-4" aria-label="Mobile">
+              <Link
+                to="/"
+                onClick={() => setMenuOpen(false)}
+                className="block border-b-2 border-foreground py-4 font-display text-3xl font-black uppercase"
+              >
+                HOME
+              </Link>
               {navLinks.map((l) => (
                 <Link
                   key={l.label}

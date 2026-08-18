@@ -11,7 +11,10 @@ export const Route = createFileRoute("/cart")({
   head: () => ({
     meta: [
       { title: "Your Cart — BRUTAL." },
-      { name: "description", content: "Review your BRUTAL. bag, apply a discount code and head to checkout." },
+      {
+        name: "description",
+        content: "Review your BRUTAL. bag, apply a discount code and head to checkout.",
+      },
       { property: "og:title", content: "Your Cart — BRUTAL." },
       { property: "og:description", content: "Review your bag and checkout." },
     ],
@@ -59,13 +62,20 @@ export function OrderSummary({ cta }: { cta?: React.ReactNode }) {
               }
             }}
           >
-            <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="BRUTAL10" aria-label="Discount code" />
+            <Input
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              placeholder="BRUTAL10"
+              aria-label="Discount code"
+            />
             <Button type="submit" variant="outline">
               Apply
             </Button>
           </form>
         )}
-        {error && <p className="mt-1 text-[0.7rem] font-bold uppercase text-destructive">{error}</p>}
+        {error && (
+          <p className="mt-1 text-[0.7rem] font-bold uppercase text-destructive">{error}</p>
+        )}
         <p className="mt-2 text-[0.7rem] text-muted-foreground">Try BRUTAL10 or DROP500.</p>
       </div>
 
@@ -103,7 +113,9 @@ function CartPage() {
       ) : cartLines.length === 0 ? (
         <div className="mt-10 border-[3px] border-foreground p-12 text-center brutal-shadow">
           <h2 className="text-3xl">Empty in here.</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Nothing in the bag yet. The drop is waiting.</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Nothing in the bag yet. The drop is waiting.
+          </p>
           <div className="mt-6 flex justify-center">
             <Link
               to="/shop"
@@ -118,8 +130,15 @@ function CartPage() {
         <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_380px] lg:items-start">
           <ul className="grid gap-4">
             {cartLines.map(({ item, product }) => (
-              <li key={item.key} className="flex gap-4 border-[3px] border-foreground p-3 brutal-shadow-sm sm:p-4">
-                <Link to="/product/$productId" params={{ productId: product.id }} className="shrink-0">
+              <li
+                key={item.key}
+                className="flex gap-4 border-[3px] border-foreground p-3 brutal-shadow-sm sm:p-4"
+              >
+                <Link
+                  to="/product/$productId"
+                  params={{ productId: product.id }}
+                  className="shrink-0"
+                >
                   <img
                     src={product.image}
                     alt={product.name}
@@ -133,7 +152,11 @@ function CartPage() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <h2 className="truncate text-lg">
-                        <Link to="/product/$productId" params={{ productId: product.id }} className="hover:underline">
+                        <Link
+                          to="/product/$productId"
+                          params={{ productId: product.id }}
+                          className="hover:underline"
+                        >
                           {product.name}
                         </Link>
                       </h2>
@@ -155,7 +178,9 @@ function CartPage() {
                   </div>
                   <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-4">
                     <QuantitySelector value={item.qty} onChange={(v) => setQty(item.key, v)} />
-                    <span className="font-display text-xl font-black">{inr(product.price * item.qty)}</span>
+                    <span className="font-display text-xl font-black">
+                      {inr(product.price * item.qty)}
+                    </span>
                   </div>
                 </div>
               </li>

@@ -1,6 +1,19 @@
-const DEFAULT = ["NEW DROP", "LIMITED EDITION", "FREE SHIPPING OVER ₹4,999", "BRUTAL.", "NO RULES", "MADE IN INDIA"];
+const DEFAULT = [
+  "NEW DROP",
+  "LIMITED EDITION",
+  "FREE SHIPPING OVER ₹4,999",
+  "BRUTAL.",
+  "NO RULES",
+  "MADE IN INDIA",
+];
 
-export function Marquee({ items = DEFAULT, invert = false }: { items?: string[]; invert?: boolean }) {
+export function Marquee({
+  items = DEFAULT,
+  invert = false,
+}: {
+  items?: string[];
+  invert?: boolean;
+}) {
   const row = [...items, ...items];
   return (
     <div
@@ -12,7 +25,9 @@ export function Marquee({ items = DEFAULT, invert = false }: { items?: string[];
       <div className="flex w-max animate-marquee">
         {row.map((item, i) => (
           <span key={i} className="flex items-center whitespace-nowrap">
-            <span className="font-display text-sm font-black uppercase tracking-[0.2em] sm:text-base">{item}</span>
+            <span className="font-display text-sm font-black uppercase tracking-[0.2em] sm:text-base">
+              {item}
+            </span>
             <span className="mx-6 text-flare" aria-hidden>
               ◆
             </span>

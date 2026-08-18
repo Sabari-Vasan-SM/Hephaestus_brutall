@@ -10,7 +10,10 @@ export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
       { title: "Create Account — BRUTAL." },
-      { name: "description", content: "Join the drop. Create a BRUTAL. account for early access to limited runs." },
+      {
+        name: "description",
+        content: "Join the drop. Create a BRUTAL. account for early access to limited runs.",
+      },
       { property: "og:title", content: "Create Account — BRUTAL." },
       { property: "og:description", content: "Join the drop and get early access." },
     ],
@@ -25,7 +28,10 @@ const schema = z
     password: z.string().min(6, "At least 6 characters").max(72),
     confirm: z.string(),
   })
-  .refine((d) => d.password === d.confirm, { path: ["confirm"], message: "Passwords do not match" });
+  .refine((d) => d.password === d.confirm, {
+    path: ["confirm"],
+    message: "Passwords do not match",
+  });
 
 function Signup() {
   const { signIn } = useStore();
@@ -63,21 +69,44 @@ function Signup() {
         <span className="bg-zap px-2">drop.</span>
       </h1>
 
-      <form onSubmit={submit} className="mt-8 space-y-4 border-[3px] border-foreground p-6 brutal-shadow">
+      <form
+        onSubmit={submit}
+        className="mt-8 space-y-4 border-[3px] border-foreground p-6 brutal-shadow"
+      >
         <Field label="NAME" error={errors["name"]}>
-          <Input autoComplete="name" value={values.name} onChange={(e) => setValues((v) => ({ ...v, name: e.target.value }))} />
+          <Input
+            autoComplete="name"
+            value={values.name}
+            onChange={(e) => setValues((v) => ({ ...v, name: e.target.value }))}
+          />
         </Field>
         <Field label="EMAIL" error={errors["email"]}>
-          <Input type="email" autoComplete="email" value={values.email} onChange={(e) => setValues((v) => ({ ...v, email: e.target.value }))} />
+          <Input
+            type="email"
+            autoComplete="email"
+            value={values.email}
+            onChange={(e) => setValues((v) => ({ ...v, email: e.target.value }))}
+          />
         </Field>
         <Field label="PASSWORD" error={errors["password"]}>
-          <Input type="password" autoComplete="new-password" value={values.password} onChange={(e) => setValues((v) => ({ ...v, password: e.target.value }))} />
+          <Input
+            type="password"
+            autoComplete="new-password"
+            value={values.password}
+            onChange={(e) => setValues((v) => ({ ...v, password: e.target.value }))}
+          />
         </Field>
         <Field label="CONFIRM PASSWORD" error={errors["confirm"]}>
-          <Input type="password" autoComplete="new-password" value={values.confirm} onChange={(e) => setValues((v) => ({ ...v, confirm: e.target.value }))} />
+          <Input
+            type="password"
+            autoComplete="new-password"
+            value={values.confirm}
+            onChange={(e) => setValues((v) => ({ ...v, confirm: e.target.value }))}
+          />
         </Field>
         <Button type="submit" variant="flare" size="lg" full disabled={loading}>
-          {loading ? "CREATING…" : "Create account"} <ArrowRight width={16} height={16} strokeWidth={3} />
+          {loading ? "CREATING…" : "Create account"}{" "}
+          <ArrowRight width={16} height={16} strokeWidth={3} />
         </Button>
         <p className="label-xs pt-2 text-muted-foreground">
           ALREADY A MEMBER?{" "}

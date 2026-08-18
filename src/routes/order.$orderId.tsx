@@ -9,7 +9,10 @@ export const Route = createFileRoute("/order/$orderId")({
   head: () => ({
     meta: [
       { title: "Order Confirmed — BRUTAL." },
-      { name: "description", content: "Your BRUTAL. order is locked in. Track delivery and keep shopping the drop." },
+      {
+        name: "description",
+        content: "Your BRUTAL. order is locked in. Track delivery and keep shopping the drop.",
+      },
       { name: "robots", content: "noindex" },
       { property: "og:title", content: "Order Confirmed — BRUTAL." },
       { property: "og:description", content: "Your order is locked in." },
@@ -26,8 +29,14 @@ function OrderSuccess() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
       <div className="relative border-[3px] border-foreground p-8 brutal-shadow-lg animate-pop">
-        <span aria-hidden className="absolute -right-4 -top-4 h-16 w-16 border-[3px] border-foreground bg-zap" />
-        <span aria-hidden className="absolute -bottom-5 left-8 h-10 w-24 border-[3px] border-foreground bg-flare" />
+        <span
+          aria-hidden
+          className="absolute -right-4 -top-4 h-16 w-16 border-[3px] border-foreground bg-zap"
+        />
+        <span
+          aria-hidden
+          className="absolute -bottom-5 left-8 h-10 w-24 border-[3px] border-foreground bg-flare"
+        />
         <span className="label-xs inline-flex items-center gap-2 border-[3px] border-foreground bg-zap px-3 py-2">
           <Check width={14} height={14} strokeWidth={4} /> ORDER CONFIRMED
         </span>
@@ -44,7 +53,9 @@ function OrderSuccess() {
           </div>
           <div className="border-[3px] border-foreground p-4">
             <dt className="label-xs text-muted-foreground">ESTIMATED DELIVERY</dt>
-            <dd className="mt-1 font-display text-xl font-black">{order?.eta ?? "WITHIN 6 DAYS"}</dd>
+            <dd className="mt-1 font-display text-xl font-black">
+              {order?.eta ?? "WITHIN 6 DAYS"}
+            </dd>
           </div>
         </dl>
 

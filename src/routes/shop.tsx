@@ -40,7 +40,9 @@ export const Route = createFileRoute("/shop")({
       q: str(search["q"]),
       category: str(search["category"]),
       sale: search["sale"] === true || search["sale"] === "true" ? true : undefined,
-      sort: SORTS.some((s) => s.value === search["sort"]) ? (search["sort"] as SortValue) : undefined,
+      sort: SORTS.some((s) => s.value === search["sort"])
+        ? (search["sort"] as SortValue)
+        : undefined,
       maxPrice: Number.isFinite(num) && num > 0 ? num : undefined,
       size: str(search["size"]),
       color: str(search["color"]),
@@ -53,10 +55,14 @@ export const Route = createFileRoute("/shop")({
       { title: "Shop All — BRUTAL." },
       {
         name: "description",
-        content: "Filter the full BRUTAL. catalogue by category, size, colour, price and rating. Limited-run streetwear.",
+        content:
+          "Filter the full BRUTAL. catalogue by category, size, colour, price and rating. Limited-run streetwear.",
       },
       { property: "og:title", content: "Shop All — BRUTAL." },
-      { property: "og:description", content: "Filter the full BRUTAL. catalogue. Limited-run streetwear." },
+      {
+        property: "og:description",
+        content: "Filter the full BRUTAL. catalogue. Limited-run streetwear.",
+      },
     ],
   }),
   component: Shop,
@@ -75,7 +81,10 @@ function Shop() {
   const list = useMemo(() => {
     let out = products.slice();
     const term = search.q?.trim().toLowerCase();
-    if (term) out = out.filter((p) => `${p.name} ${p.categoryLabel} ${p.subtitle}`.toLowerCase().includes(term));
+    if (term)
+      out = out.filter((p) =>
+        `${p.name} ${p.categoryLabel} ${p.subtitle}`.toLowerCase().includes(term),
+      );
     if (search.category) out = out.filter((p) => p.category === search.category);
     if (search.sale) out = out.filter((p) => !!p.compareAt);
     if (search.size) out = out.filter((p) => p.sizes.includes(search.size!));
@@ -101,9 +110,14 @@ function Shop() {
     return out;
   }, [search, maxPrice]);
 
-  const activeCount = [search.category, search.sale, search.size, search.color, search.rating, search.q].filter(
-    Boolean,
-  ).length;
+  const activeCount = [
+    search.category,
+    search.sale,
+    search.size,
+    search.color,
+    search.rating,
+    search.q,
+  ].filter(Boolean).length;
 
   const clearAll = () => navigate({ search: {}, resetScroll: false });
 
@@ -155,7 +169,11 @@ function Shop() {
         <h3 className="label-xs mb-3">SIZE</h3>
         <div className="flex flex-wrap gap-2">
           {SIZES.map((s) => (
-            <FilterChip key={s} active={search.size === s} onClick={() => set({ size: search.size === s ? undefined : s })}>
+            <FilterChip
+              key={s}
+              active={search.size === s}
+              onClick={() => set({ size: search.size === s ? undefined : s })}
+            >
               {s}
             </FilterChip>
           ))}
@@ -166,7 +184,11 @@ function Shop() {
         <h3 className="label-xs mb-3">COLOUR</h3>
         <div className="flex flex-wrap gap-2">
           {COLORS.map((c) => (
-            <FilterChip key={c} active={search.color === c} onClick={() => set({ color: search.color === c ? undefined : c })}>
+            <FilterChip
+              key={c}
+              active={search.color === c}
+              onClick={() => set({ color: search.color === c ? undefined : c })}
+            >
               {c}
             </FilterChip>
           ))}
@@ -177,7 +199,11 @@ function Shop() {
         <h3 className="label-xs mb-3">RATING</h3>
         <div className="grid gap-2">
           {[4.5, 4, 3].map((r) => (
-            <FilterButton key={r} active={search.rating === r} onClick={() => set({ rating: search.rating === r ? undefined : r })}>
+            <FilterButton
+              key={r}
+              active={search.rating === r}
+              onClick={() => set({ rating: search.rating === r ? undefined : r })}
+            >
               {r}★ & UP
             </FilterButton>
           ))}
@@ -186,7 +212,10 @@ function Shop() {
 
       <div>
         <h3 className="label-xs mb-3">OFFERS</h3>
-        <FilterButton active={!!search.sale} onClick={() => set({ sale: search.sale ? undefined : true })}>
+        <FilterButton
+          active={!!search.sale}
+          onClick={() => set({ sale: search.sale ? undefined : true })}
+        >
           ON SALE ONLY
         </FilterButton>
       </div>
@@ -210,7 +239,9 @@ function Shop() {
 
       <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
         <aside className="hidden lg:block">
-          <div className="sticky top-24 border-[3px] border-foreground p-5 brutal-shadow-sm">{Filters}</div>
+          <div className="sticky top-24 border-[3px] border-foreground p-5 brutal-shadow-sm">
+            {Filters}
+          </div>
         </aside>
 
         <section>
@@ -220,14 +251,17 @@ function Shop() {
               onClick={() => setFiltersOpen(true)}
               className="label-xs flex items-center gap-2 border-[3px] border-foreground px-4 py-3 lg:hidden"
             >
-              <SlidersHorizontal width={14} height={14} strokeWidth={3} /> FILTER{activeCount ? ` (${activeCount})` : ""}
+              <SlidersHorizontal width={14} height={14} strokeWidth={3} /> FILTER
+              {activeCount ? ` (${activeCount})` : ""}
             </button>
 
             <label className="label-xs flex items-center gap-2 border-[3px] border-foreground px-3 py-2">
               SORT
               <select
                 value={search.sort ?? ""}
-                onChange={(e) => set({ sort: (e.target.value || undefined) as SortValue | undefined })}
+                onChange={(e) =>
+                  set({ sort: (e.target.value || undefined) as SortValue | undefined })
+                }
                 className="bg-transparent text-xs font-bold uppercase outline-none"
                 aria-label="Sort products"
               >
@@ -248,7 +282,9 @@ function Shop() {
                 aria-label="Grid view"
                 aria-pressed={search.view !== "list"}
                 onClick={() => set({ view: undefined })}
-                className={"border-[3px] border-foreground p-2 " + (search.view !== "list" ? "bg-zap" : "")}
+                className={
+                  "border-[3px] border-foreground p-2 " + (search.view !== "list" ? "bg-zap" : "")
+                }
               >
                 <LayoutGrid width={16} height={16} strokeWidth={3} />
               </button>
@@ -257,7 +293,9 @@ function Shop() {
                 aria-label="List view"
                 aria-pressed={search.view === "list"}
                 onClick={() => set({ view: "list" })}
-                className={"border-[3px] border-foreground p-2 " + (search.view === "list" ? "bg-zap" : "")}
+                className={
+                  "border-[3px] border-foreground p-2 " + (search.view === "list" ? "bg-zap" : "")
+                }
               >
                 <List width={16} height={16} strokeWidth={3} />
               </button>
@@ -267,7 +305,9 @@ function Shop() {
           {list.length === 0 ? (
             <div className="border-[3px] border-foreground p-12 text-center brutal-shadow-sm">
               <h2 className="text-3xl">No matches.</h2>
-              <p className="mt-2 text-sm text-muted-foreground">Loosen the filters and try again.</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Loosen the filters and try again.
+              </p>
               <div className="mt-6 flex justify-center">
                 <Button variant="zap" onClick={clearAll} type="button">
                   Reset filters
@@ -277,11 +317,17 @@ function Shop() {
           ) : (
             <div
               className={
-                search.view === "list" ? "grid gap-4" : "grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-3"
+                search.view === "list"
+                  ? "grid gap-4"
+                  : "grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-3"
               }
             >
               {list.map((p) => (
-                <ProductCard key={p.id} product={p} layout={search.view === "list" ? "list" : "grid"} />
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  layout={search.view === "list" ? "list" : "grid"}
+                />
               ))}
             </div>
           )}
@@ -299,7 +345,12 @@ function Shop() {
           <div className="absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto border-t-[3px] border-foreground bg-background p-5">
             <div className="mb-5 flex items-center justify-between">
               <span className="font-display text-2xl font-black">FILTERS</span>
-              <button type="button" onClick={() => setFiltersOpen(false)} aria-label="Close filters" className="border-[3px] border-foreground p-2">
+              <button
+                type="button"
+                onClick={() => setFiltersOpen(false)}
+                aria-label="Close filters"
+                className="border-[3px] border-foreground p-2"
+              >
                 <X width={18} height={18} strokeWidth={3} />
               </button>
             </div>
@@ -317,7 +368,8 @@ function Shop() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <p className="max-w-md text-sm text-muted-foreground">
             Every BRUTAL. product ships with free returns for 14 days. Rated{" "}
-            <span className="font-bold text-foreground">4.6 average</span> across {products.length} pieces.
+            <span className="font-bold text-foreground">4.6 average</span> across {products.length}{" "}
+            pieces.
           </p>
           <Rating value={4.6} count={products.reduce((n, p) => n + p.reviewCount, 0)} size={18} />
         </div>
@@ -326,7 +378,15 @@ function Shop() {
   );
 }
 
-function FilterButton({ active, onClick, children }: { active?: boolean; onClick: () => void; children: React.ReactNode }) {
+function FilterButton({
+  active,
+  onClick,
+  children,
+}: {
+  active?: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
       type="button"
@@ -342,7 +402,15 @@ function FilterButton({ active, onClick, children }: { active?: boolean; onClick
   );
 }
 
-function FilterChip({ active, onClick, children }: { active?: boolean; onClick: () => void; children: React.ReactNode }) {
+function FilterChip({
+  active,
+  onClick,
+  children,
+}: {
+  active?: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
       type="button"

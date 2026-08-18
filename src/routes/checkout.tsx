@@ -12,7 +12,10 @@ export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
       { title: "Checkout — BRUTAL." },
-      { name: "description", content: "Complete your BRUTAL. order: shipping, delivery speed and payment." },
+      {
+        name: "description",
+        content: "Complete your BRUTAL. order: shipping, delivery speed and payment.",
+      },
       { property: "og:title", content: "Checkout — BRUTAL." },
       { property: "og:description", content: "Complete your order." },
     ],
@@ -22,12 +25,18 @@ export const Route = createFileRoute("/checkout")({
 
 const schema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
-  phone: z.string().trim().regex(/^[0-9+\-\s]{8,15}$/, "Enter a valid phone number"),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^[0-9+\-\s]{8,15}$/, "Enter a valid phone number"),
   fullName: z.string().trim().min(2, "Enter your full name").max(100),
   address: z.string().trim().min(5, "Enter your address").max(200),
   city: z.string().trim().min(2, "Enter your city").max(80),
   state: z.string().trim().min(2, "Enter your state").max(80),
-  postalCode: z.string().trim().regex(/^[0-9]{5,6}$/, "Enter a valid postal code"),
+  postalCode: z
+    .string()
+    .trim()
+    .regex(/^[0-9]{5,6}$/, "Enter a valid postal code"),
   country: z.string().trim().min(2).max(80),
 });
 
@@ -67,14 +76,17 @@ function Checkout() {
 
   const field = (k: keyof typeof values) => ({
     value: values[k],
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => setValues((v) => ({ ...v, [k]: e.target.value })),
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+      setValues((v) => ({ ...v, [k]: e.target.value })),
   });
 
   if (cartLines.length === 0) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6">
         <h1 className="text-[clamp(2.5rem,9vw,5rem)]">Nothing to pay for.</h1>
-        <p className="mt-4 text-sm text-muted-foreground">Your cart is empty, so checkout is on hold.</p>
+        <p className="mt-4 text-sm text-muted-foreground">
+          Your cart is empty, so checkout is on hold.
+        </p>
         <div className="mt-8 flex justify-center">
           <Link
             to="/shop"
@@ -131,19 +143,33 @@ function Checkout() {
       <form onSubmit={submit} className="mt-10 grid gap-8 lg:grid-cols-[1fr_380px] lg:items-start">
         <div className="space-y-6">
           <fieldset className="border-[3px] border-foreground p-5 brutal-shadow-sm">
-            <legend className="label-xs bg-foreground px-2 py-1 text-background">CONTACT INFORMATION</legend>
+            <legend className="label-xs bg-foreground px-2 py-1 text-background">
+              CONTACT INFORMATION
+            </legend>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <Field label="EMAIL" error={errors["email"]}>
-                <Input type="email" autoComplete="email" placeholder="you@email.com" {...field("email")} />
+                <Input
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@email.com"
+                  {...field("email")}
+                />
               </Field>
               <Field label="PHONE" error={errors["phone"]}>
-                <Input type="tel" autoComplete="tel" placeholder="98765 43210" {...field("phone")} />
+                <Input
+                  type="tel"
+                  autoComplete="tel"
+                  placeholder="98765 43210"
+                  {...field("phone")}
+                />
               </Field>
             </div>
           </fieldset>
 
           <fieldset className="border-[3px] border-foreground p-5 brutal-shadow-sm">
-            <legend className="label-xs bg-foreground px-2 py-1 text-background">SHIPPING ADDRESS</legend>
+            <legend className="label-xs bg-foreground px-2 py-1 text-background">
+              SHIPPING ADDRESS
+            </legend>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <Field label="FULL NAME" error={errors["fullName"]}>
@@ -223,7 +249,8 @@ function Checkout() {
             </div>
           </div>
           <Button type="submit" variant="flare" size="lg" full disabled={submitting}>
-            {submitting ? "PLACING ORDER…" : "Place order"} <ArrowRight width={16} height={16} strokeWidth={3} />
+            {submitting ? "PLACING ORDER…" : "Place order"}{" "}
+            <ArrowRight width={16} height={16} strokeWidth={3} />
           </Button>
         </div>
       </form>

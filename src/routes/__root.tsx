@@ -21,7 +21,9 @@ function NotFoundComponent() {
       <div className="max-w-md border-[3px] border-foreground p-10 text-center brutal-shadow">
         <h1 className="text-8xl">404</h1>
         <h2 className="mt-4 text-xl">Nothing here.</h2>
-        <p className="mt-2 text-sm text-muted-foreground">This page doesn't exist or has been dropped.</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          This page doesn't exist or has been dropped.
+        </p>
         <div className="mt-6">
           <Link
             to="/"
@@ -43,7 +45,9 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     <div className="flex min-h-[70vh] items-center justify-center bg-background px-4">
       <div className="max-w-md border-[3px] border-foreground p-10 text-center brutal-shadow">
         <h1 className="text-3xl">This page didn't load</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Something broke on our end. Try again or head home.</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Something broke on our end. Try again or head home.
+        </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <button
             onClick={() => {
@@ -54,7 +58,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
           >
             TRY AGAIN
           </button>
-          <a href="/" className="label-xs border-[3px] border-foreground px-5 py-3 press brutal-shadow-sm">
+          <a
+            href="/"
+            className="label-xs border-[3px] border-foreground px-5 py-3 press brutal-shadow-sm"
+          >
             GO HOME
           </a>
         </div>
@@ -71,7 +78,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "BRUTAL. — Streetwear With No Rules" },
       {
         name: "description",
-        content: "BRUTAL. is an independent streetwear label. Heavyweight basics, limited drops, no compromise.",
+        content:
+          "BRUTAL. is an independent streetwear label. Heavyweight basics, limited drops, no compromise.",
       },
       { property: "og:title", content: "BRUTAL. — Streetwear With No Rules" },
       {
@@ -89,7 +97,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap",
       },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "apple-touch-icon", href: "/favicon.svg" },
     ],
   }),
   shellComponent: RootShell,

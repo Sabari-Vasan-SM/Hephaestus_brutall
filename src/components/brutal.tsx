@@ -1,6 +1,11 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { Star } from "lucide-react";
-import { forwardRef, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode } from "react";
+import {
+  forwardRef,
+  type ButtonHTMLAttributes,
+  type InputHTMLAttributes,
+  type ReactNode,
+} from "react";
 import { cn } from "@/lib/utils";
 
 export const buttonStyles = cva(
@@ -26,7 +31,8 @@ export const buttonStyles = cva(
   },
 );
 
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof buttonStyles>;
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
+  VariantProps<typeof buttonStyles>;
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, full, ...props }, ref) => (
@@ -65,7 +71,9 @@ export function Field({
       <span className="label-xs mb-2 block">{label}</span>
       {children}
       {error ? (
-        <span className="mt-1 block text-[0.7rem] font-bold uppercase text-destructive">{error}</span>
+        <span className="mt-1 block text-[0.7rem] font-bold uppercase text-destructive">
+          {error}
+        </span>
       ) : hint ? (
         <span className="mt-1 block text-[0.7rem] text-muted-foreground">{hint}</span>
       ) : null}
@@ -100,7 +108,15 @@ export function badgeTone(label: string) {
   return "paper" as const;
 }
 
-export function Rating({ value, count, size = 14 }: { value: number; count?: number; size?: number }) {
+export function Rating({
+  value,
+  count,
+  size = 14,
+}: {
+  value: number;
+  count?: number;
+  size?: number;
+}) {
   return (
     <div className="flex items-center gap-1" aria-label={`Rated ${value} out of 5`}>
       <span className="flex" aria-hidden>
@@ -110,12 +126,16 @@ export function Rating({ value, count, size = 14 }: { value: number; count?: num
             width={size}
             height={size}
             strokeWidth={2.5}
-            className={i <= Math.round(value) ? "fill-zap text-foreground" : "text-muted-foreground"}
+            className={
+              i <= Math.round(value) ? "fill-zap text-foreground" : "text-muted-foreground"
+            }
           />
         ))}
       </span>
       <span className="text-[0.7rem] font-bold">{value.toFixed(1)}</span>
-      {count !== undefined && <span className="text-[0.7rem] text-muted-foreground">({count})</span>}
+      {count !== undefined && (
+        <span className="text-[0.7rem] text-muted-foreground">({count})</span>
+      )}
     </div>
   );
 }
@@ -124,7 +144,11 @@ export function SectionTitle({ children, kicker }: { children: ReactNode; kicker
   return (
     <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
       <div>
-        {kicker && <span className="label-xs mb-3 inline-block bg-foreground px-2 py-1 text-background">{kicker}</span>}
+        {kicker && (
+          <span className="label-xs mb-3 inline-block bg-foreground px-2 py-1 text-background">
+            {kicker}
+          </span>
+        )}
         <h2 className="text-[clamp(2.5rem,8vw,5rem)]">{children}</h2>
       </div>
     </div>

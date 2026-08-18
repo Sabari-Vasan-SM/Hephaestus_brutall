@@ -30,7 +30,10 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
     if (!term) return [];
     return products
       .filter((p) =>
-        [p.name, p.categoryLabel, p.category, p.subtitle, ...p.colors].join(" ").toLowerCase().includes(term),
+        [p.name, p.categoryLabel, p.category, p.subtitle, ...p.colors]
+          .join(" ")
+          .toLowerCase()
+          .includes(term),
       )
       .slice(0, 6);
   }, [q]);
@@ -38,7 +41,12 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
   if (!open) return null;
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Search" className="fixed inset-0 z-[70] overflow-y-auto bg-background">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Search"
+      className="fixed inset-0 z-[70] overflow-y-auto bg-background"
+    >
       <div className="mx-auto max-w-[1100px] px-4 py-6 sm:px-6 sm:py-10">
         <div className="flex justify-end">
           <button
@@ -80,7 +88,9 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
             {results.length === 0 ? (
               <div className="border-[3px] border-foreground p-8 text-center">
                 <p className="font-display text-2xl font-black uppercase">Nothing here.</p>
-                <p className="mt-2 text-sm text-muted-foreground">Try “tee”, “cargo” or “hoodie”.</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Try “tee”, “cargo” or “hoodie”.
+                </p>
               </div>
             ) : (
               <ul className="grid gap-3">
@@ -95,9 +105,18 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
                       }}
                       className="flex items-center gap-4 border-[3px] border-foreground p-3 transition-colors hover:bg-zap"
                     >
-                      <img src={p.image} alt="" width={80} height={80} loading="lazy" className="h-16 w-16 border-2 border-foreground object-cover" />
+                      <img
+                        src={p.image}
+                        alt=""
+                        width={80}
+                        height={80}
+                        loading="lazy"
+                        className="h-16 w-16 border-2 border-foreground object-cover"
+                      />
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate font-display text-base font-black uppercase">{p.name}</span>
+                        <span className="block truncate font-display text-base font-black uppercase">
+                          {p.name}
+                        </span>
                         <span className="label-xs text-muted-foreground">{p.categoryLabel}</span>
                       </span>
                       <span className="font-display font-black">{inr(p.price)}</span>

@@ -76,7 +76,12 @@ export function Footer() {
           <h3 className="label-xs text-zap">INFO</h3>
           <div className="grid grid-cols-2 gap-x-4 gap-y-3 lg:grid-cols-1">
             {infoLinks.map((l) => (
-              <Link key={l} to="/info/$slug" params={{ slug: l.toLowerCase() }} className="text-sm font-bold uppercase hover:text-zap">
+              <Link
+                key={l}
+                to="/info/$slug"
+                params={{ slug: l.toLowerCase() }}
+                className="text-sm font-bold uppercase hover:text-zap"
+              >
                 {l}
               </Link>
             ))}
@@ -85,8 +90,13 @@ export function Footer() {
       </div>
 
       <div className="border-t-[3px] border-background/40">
-        <form onSubmit={subscribe} className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-10 sm:px-6 lg:flex-row lg:items-center lg:px-10">
-          <h3 className="text-[clamp(1.6rem,4vw,2.4rem)] text-background lg:w-1/3">Get the drop.</h3>
+        <form
+          onSubmit={subscribe}
+          className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-10 sm:px-6 lg:flex-row lg:items-center lg:px-10"
+        >
+          <h3 className="text-[clamp(1.6rem,4vw,2.4rem)] text-background lg:w-1/3">
+            Get the drop.
+          </h3>
           <div className="flex w-full flex-col gap-3 sm:flex-row lg:flex-1">
             <div className="flex-1">
               <label className="sr-only" htmlFor="newsletter-email">
@@ -111,7 +121,9 @@ export function Footer() {
       </div>
 
       <div className="border-t-[3px] border-background/40 px-4 py-5 text-center sm:px-6 lg:px-10">
-        <p className="label-xs text-background/60">© 2026 BRUTAL. ALL RIGHTS RESERVED. BUILT DIFFERENT.</p>
+        <p className="label-xs text-background/60">
+          © 2026 BRUTAL. ALL RIGHTS RESERVED. BUILT DIFFERENT.
+        </p>
       </div>
     </footer>
   );

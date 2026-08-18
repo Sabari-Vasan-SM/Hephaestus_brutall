@@ -10,7 +10,10 @@ const CONTENT: Record<string, { title: string; body: string[] }> = {
   },
   contact: {
     title: "Contact.",
-    body: ["Email hello@brutal.store — we reply within one working day.", "Studio visits by appointment only."],
+    body: [
+      "Email hello@brutal.store — we reply within one working day.",
+      "Studio visits by appointment only.",
+    ],
   },
   faq: {
     title: "FAQ.",
@@ -21,11 +24,17 @@ const CONTENT: Record<string, { title: string; body: string[] }> = {
   },
   shipping: {
     title: "Shipping.",
-    body: ["Free shipping over ₹4,999. Metro delivery in 48 hours, rest of India in 4–6 days.", "Express delivery is ₹199."],
+    body: [
+      "Free shipping over ₹4,999. Metro delivery in 48 hours, rest of India in 4–6 days.",
+      "Express delivery is ₹199.",
+    ],
   },
   returns: {
     title: "Returns.",
-    body: ["14-day returns on unworn items with tags attached.", "Refunds land within 5 working days of pickup."],
+    body: [
+      "14-day returns on unworn items with tags attached.",
+      "Refunds land within 5 working days of pickup.",
+    ],
   },
   privacy: {
     title: "Privacy.",
@@ -33,7 +42,10 @@ const CONTENT: Record<string, { title: string; body: string[] }> = {
   },
   terms: {
     title: "Terms.",
-    body: ["By shopping with BRUTAL. you agree to our sale, shipping and returns policies.", "Prices include all taxes."],
+    body: [
+      "By shopping with BRUTAL. you agree to our sale, shipping and returns policies.",
+      "Prices include all taxes.",
+    ],
   },
 };
 

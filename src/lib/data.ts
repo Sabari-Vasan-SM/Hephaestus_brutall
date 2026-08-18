@@ -66,10 +66,26 @@ export const products: Product[] = [
     colors: ["Black", "Bone"],
     description:
       "A 280 GSM boxy tee cut deliberately wide through the body with dropped shoulders. Garment dyed, pre-shrunk and built to hold its shape after the hundredth wash.",
-    materials: ["100% combed organic cotton", "280 GSM heavyweight jersey", "Garment dyed in Tiruppur"],
+    materials: [
+      "100% combed organic cotton",
+      "280 GSM heavyweight jersey",
+      "Garment dyed in Tiruppur",
+    ],
     reviews: [
-      R("r1", "Ananya K.", 5, "The weight of this tee is unreal. It hangs exactly like the photos.", "12 JAN 2026"),
-      R("r2", "Rehan M.", 4, "Sizing runs big, which is the point. Went true to size and it's perfect.", "03 FEB 2026"),
+      R(
+        "r1",
+        "Ananya K.",
+        5,
+        "The weight of this tee is unreal. It hangs exactly like the photos.",
+        "12 JAN 2026",
+      ),
+      R(
+        "r2",
+        "Rehan M.",
+        4,
+        "Sizing runs big, which is the point. Went true to size and it's perfect.",
+        "03 FEB 2026",
+      ),
     ],
   },
   {
@@ -89,7 +105,15 @@ export const products: Product[] = [
     description:
       "Wide-leg cargo cut from rigid cotton twill with bellow pockets and a stiff waistband that softens with wear. Deliberately architectural.",
     materials: ["98% cotton twill, 2% elastane", "Enzyme washed", "YKK hardware"],
-    reviews: [R("r3", "Dev S.", 5, "Fits enormous in the best way. Pockets actually usable.", "22 FEB 2026")],
+    reviews: [
+      R(
+        "r3",
+        "Dev S.",
+        5,
+        "Fits enormous in the best way. Pockets actually usable.",
+        "22 FEB 2026",
+      ),
+    ],
   },
   {
     id: "hoodie-003",
@@ -148,7 +172,8 @@ export const products: Product[] = [
     badges: ["SALE"],
     sizes: ["One Size"],
     colors: ["Black"],
-    description: "Structured cotton canvas bucket with a stiffened brim that holds its angle. Quietly aggressive.",
+    description:
+      "Structured cotton canvas bucket with a stiffened brim that holds its angle. Quietly aggressive.",
     materials: ["Heavy cotton canvas", "Cotton twill lining"],
     reviews: [R("r7", "Ishan P.", 4, "Brim keeps its shape, which is rare.", "27 FEB 2026")],
   },
@@ -166,9 +191,12 @@ export const products: Product[] = [
     badges: ["NEW"],
     sizes: ["One Size"],
     colors: ["Bone"],
-    description: "18oz canvas tote with leather straps, an internal zip pocket and a flat base that actually stands up.",
+    description:
+      "18oz canvas tote with leather straps, an internal zip pocket and a flat base that actually stands up.",
     materials: ["18oz cotton canvas", "Vegetable tanned leather straps"],
-    reviews: [R("r8", "Sara D.", 5, "Carries a laptop, gym kit and groceries. Unbothered.", "14 FEB 2026")],
+    reviews: [
+      R("r8", "Sara D.", 5, "Carries a laptop, gym kit and groceries. Unbothered.", "14 FEB 2026"),
+    ],
   },
   {
     id: "denim-007",
@@ -185,9 +213,12 @@ export const products: Product[] = [
     badges: ["SALE", "LIMITED"],
     sizes: ["XS", "S", "M", "L", "XL"],
     colors: ["Washed Black"],
-    description: "A boxy trucker in 13oz rigid denim, overdyed black and stonewashed once so it fades on your terms.",
+    description:
+      "A boxy trucker in 13oz rigid denim, overdyed black and stonewashed once so it fades on your terms.",
     materials: ["13oz Japanese denim", "Overdyed and stonewashed", "Antique silver hardware"],
-    reviews: [R("r9", "Nikhil B.", 5, "The fade after a month is exactly what I wanted.", "05 MAR 2026")],
+    reviews: [
+      R("r9", "Nikhil B.", 5, "The fade after a month is exactly what I wanted.", "05 MAR 2026"),
+    ],
   },
   {
     id: "shades-008",
@@ -210,18 +241,51 @@ export const products: Product[] = [
 ];
 
 export const categories = [
-  { slug: "men", title: "MEN", image: catMen, count: products.filter((p) => p.category === "men").length },
-  { slug: "women", title: "WOMEN", image: catWomen, count: products.filter((p) => p.category === "women").length },
+  {
+    slug: "men",
+    title: "MEN",
+    image: catMen,
+    count: products.filter((p) => p.category === "men").length,
+  },
+  {
+    slug: "women",
+    title: "WOMEN",
+    image: catWomen,
+    count: products.filter((p) => p.category === "women").length,
+  },
   {
     slug: "accessories",
     title: "ACCESS-\nORIES",
     image: catAcc,
     count: products.filter((p) => p.category === "accessories").length,
   },
-  { slug: "footwear", title: "FOOT-\nWEAR", image: p4, count: products.filter((p) => p.category === "footwear").length },
+  {
+    slug: "footwear",
+    title: "FOOT-\nWEAR",
+    image: p4,
+    count: products.filter((p) => p.category === "footwear").length,
+  },
 ];
 
-export const allSizes = ["XS", "S", "M", "L", "XL", "28", "30", "32", "34", "36", "6", "7", "8", "9", "10", "11", "One Size"];
+export const allSizes = [
+  "XS",
+  "S",
+  "M",
+  "L",
+  "XL",
+  "28",
+  "30",
+  "32",
+  "34",
+  "36",
+  "6",
+  "7",
+  "8",
+  "9",
+  "10",
+  "11",
+  "One Size",
+];
 export const allColors = Array.from(new Set(products.flatMap((p) => p.colors)));
 
 export const trendingSearches = ["Oversized tee", "Cargo", "Hoodie", "Sneakers", "Tote"];

@@ -45,7 +45,8 @@ function Home() {
               <span className="bg-foreground px-3 text-background">No rules.</span>
             </h1>
             <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Independent pieces for people who don't follow the usual. Made in small runs, built to outlive the trend.
+              Independent pieces for people who don't follow the usual. Made in small runs, built to
+              outlive the trend.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
@@ -79,9 +80,18 @@ function Home() {
           </div>
 
           <div className="relative">
-            <div aria-hidden className="absolute -left-6 -top-6 hidden h-28 w-28 border-[3px] border-foreground bg-zap sm:block" />
-            <div aria-hidden className="absolute -bottom-8 -right-4 hidden h-20 w-40 border-[3px] border-foreground bg-flare sm:block" />
-            <div aria-hidden className="absolute -right-2 top-1/3 hidden h-24 w-24 dotgrid opacity-60 lg:block" />
+            <div
+              aria-hidden
+              className="absolute -left-6 -top-6 hidden h-28 w-28 border-[3px] border-foreground bg-zap sm:block"
+            />
+            <div
+              aria-hidden
+              className="absolute -bottom-8 -right-4 hidden h-20 w-40 border-[3px] border-foreground bg-flare sm:block"
+            />
+            <div
+              aria-hidden
+              className="absolute -right-2 top-1/3 hidden h-24 w-24 dotgrid opacity-60 lg:block"
+            />
             <img
               src={heroImage}
               alt="Model wearing an oversized all-black BRUTAL. outfit"
@@ -154,7 +164,10 @@ function Home() {
                   loading="lazy"
                   className="aspect-[4/5] w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <span aria-hidden className="absolute right-3 top-3 h-8 w-8 border-2 border-foreground bg-zap" />
+                <span
+                  aria-hidden
+                  className="absolute right-3 top-3 h-8 w-8 border-2 border-foreground bg-zap"
+                />
                 <span className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-2 border-t-[3px] border-foreground bg-background p-3">
                   <span className="whitespace-pre-line font-display text-2xl font-black uppercase leading-[0.85]">
                     {c.title}
@@ -176,11 +189,17 @@ function Home() {
         </h2>
         <div className="grid gap-4">
           {[
-            ["SMALL RUNS", "Every piece is made in runs of 300 or fewer. When it's gone, it's gone."],
+            [
+              "SMALL RUNS",
+              "Every piece is made in runs of 300 or fewer. When it's gone, it's gone.",
+            ],
             ["HEAVY FABRIC", "Nothing under 280 GSM. Structure over softness, always."],
             ["NO LOGO NOISE", "Branding stays inside. The cut does the talking."],
           ].map(([t, d]) => (
-            <div key={t} className="border-[3px] border-foreground bg-background p-5 brutal-shadow-sm">
+            <div
+              key={t}
+              className="border-[3px] border-foreground bg-background p-5 brutal-shadow-sm"
+            >
               <h3 className="text-xl">{t}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{d}</p>
             </div>

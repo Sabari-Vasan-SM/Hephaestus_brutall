@@ -1,4 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { coupons, getProduct, type Product } from "./data";
 
 export type CartItem = {
@@ -21,7 +29,14 @@ export type Address = {
 export type Order = {
   id: string;
   date: string;
-  items: { productId: string; name: string; size: string; color: string; qty: number; price: number }[];
+  items: {
+    productId: string;
+    name: string;
+    size: string;
+    color: string;
+    qty: number;
+    price: number;
+  }[];
   total: number;
   status: "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
   email: string;
@@ -118,7 +133,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const setQty = useCallback((key: string, qty: number) => {
     setState((s) => ({
       ...s,
-      cart: s.cart.flatMap((c) => (c.key !== key ? [c] : qty <= 0 ? [] : [{ ...c, qty: Math.min(10, qty) }])),
+      cart: s.cart.flatMap((c) =>
+        c.key !== key ? [c] : qty <= 0 ? [] : [{ ...c, qty: Math.min(10, qty) }],
+      ),
     }));
   }, []);
 
@@ -137,7 +154,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const pushSearch = useCallback((term: string) => {
     const t = term.trim();
     if (!t) return;
-    setState((s) => ({ ...s, recentSearches: [t, ...s.recentSearches.filter((x) => x !== t)].slice(0, 6) }));
+    setState((s) => ({
+      ...s,
+      recentSearches: [t, ...s.recentSearches.filter((x) => x !== t)].slice(0, 6),
+    }));
   }, []);
 
   const cartLines = useMemo(
@@ -155,20 +175,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const subtotal = cartLines.reduce((sum, l) => sum + l.product.price * l.item.qty, 0);
     const shipping = subtotal === 0 || subtotal >= 4999 ? 0 : 149;
     const c = state.coupon ? coupons[state.coupon] : undefined;
-    const discount = !c ? 0 : c.type === "percent" ? Math.round((subtotal * c.value) / 100) : Math.min(c.value, subtotal);
+    const discount = !c
+      ? 0
+      : c.type === "percent"
+        ? Math.round((subtotal * c.value) / 100)
+        : Math.min(c.value, subtotal);
     return { subtotal, shipping, discount, total: Math.max(0, subtotal - discount + shipping) };
   }, [cartLines, state.coupon]);
 
-  const applyCoupon = useCallback(
-    (code: string) => {
-      const upper = code.trim().toUpperCase();
-      if (!upper) return { ok: false, message: "Enter a code" };
-      if (!coupons[upper]) return { ok: false, message: `${upper} is not a valid code` };
-      setState((s) => ({ ...s, coupon: upper }));
-      return { ok: true, message: `${upper} applied` };
-    },
-    [],
-  );
+  const applyCoupon = useCallback((code: string) => {
+    const upper = code.trim().toUpperCase();
+    if (!upper) return { ok: false, message: "Enter a code" };
+    if (!coupons[upper]) return { ok: false, message: `${upper} is not a valid code` };
+    setState((s) => ({ ...s, coupon: upper }));
+    return { ok: true, message: `${upper} applied` };
+  }, []);
 
   const clearCoupon = useCallback(() => setState((s) => ({ ...s, coupon: null })), []);
 
@@ -186,18 +207,25 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const order: Order = {
         ...input,
         id: "BRT-" + Math.random().toString(36).slice(2, 8).toUpperCase(),
-        date: new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase(),
+        date: new Date()
+          .toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
+          .toUpperCase(),
         items,
         total: totals.total,
         status: "PROCESSING",
-        eta: eta.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase(),
+        eta: eta
+          .toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
+          .toUpperCase(),
       };
       setState((s) => ({
         ...s,
         orders: [order, ...s.orders],
         cart: [],
         coupon: null,
-        addresses: [input.address, ...s.addresses.filter((a) => a.postalCode !== input.address.postalCode)].slice(0, 3),
+        addresses: [
+          input.address,
+          ...s.addresses.filter((a) => a.postalCode !== input.address.postalCode),
+        ].slice(0, 3),
       }));
       return order;
     },
