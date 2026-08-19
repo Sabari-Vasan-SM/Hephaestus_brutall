@@ -20,6 +20,16 @@ import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as InfoSlugRouteImport } from './routes/info.$slug'
 import { Route as OrderOrderIdRouteImport } from './routes/order.$orderId'
 import { Route as ProductProductIdRouteImport } from './routes/product.$productId'
+import { Route as SuperadminIndexRouteImport } from './routes/superadmin.index'
+import { Route as SuperadminCustomersRouteImport } from './routes/superadmin.customers'
+import { Route as SuperadminInventoryRouteImport } from './routes/superadmin.inventory'
+import { Route as SuperadminLoginRouteImport } from './routes/superadmin.login'
+import { Route as SuperadminSettingsRouteImport } from './routes/superadmin.settings'
+import { Route as SuperadminOrdersIndexRouteImport } from './routes/superadmin.orders.index'
+import { Route as SuperadminOrdersOrderIdRouteImport } from './routes/superadmin.orders.$orderId'
+import { Route as SuperadminProductsIndexRouteImport } from './routes/superadmin.products.index'
+import { Route as SuperadminProductsNewRouteImport } from './routes/superadmin.products.new'
+import { Route as SuperadminProductsProductIdEditRouteImport } from './routes/superadmin.products.$productId.edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -76,6 +86,57 @@ const ProductProductIdRoute = ProductProductIdRouteImport.update({
   path: '/product/$productId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SuperadminIndexRoute = SuperadminIndexRouteImport.update({
+  id: '/superadmin/',
+  path: '/superadmin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperadminCustomersRoute = SuperadminCustomersRouteImport.update({
+  id: '/superadmin/customers',
+  path: '/superadmin/customers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperadminInventoryRoute = SuperadminInventoryRouteImport.update({
+  id: '/superadmin/inventory',
+  path: '/superadmin/inventory',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperadminLoginRoute = SuperadminLoginRouteImport.update({
+  id: '/superadmin/login',
+  path: '/superadmin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperadminSettingsRoute = SuperadminSettingsRouteImport.update({
+  id: '/superadmin/settings',
+  path: '/superadmin/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperadminOrdersIndexRoute = SuperadminOrdersIndexRouteImport.update({
+  id: '/superadmin/orders/',
+  path: '/superadmin/orders/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperadminOrdersOrderIdRoute = SuperadminOrdersOrderIdRouteImport.update({
+  id: '/superadmin/orders/$orderId',
+  path: '/superadmin/orders/$orderId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperadminProductsIndexRoute = SuperadminProductsIndexRouteImport.update({
+  id: '/superadmin/products/',
+  path: '/superadmin/products/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperadminProductsNewRoute = SuperadminProductsNewRouteImport.update({
+  id: '/superadmin/products/new',
+  path: '/superadmin/products/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperadminProductsProductIdEditRoute =
+  SuperadminProductsProductIdEditRouteImport.update({
+    id: '/superadmin/products/$productId/edit',
+    path: '/superadmin/products/$productId/edit',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,6 +150,16 @@ export interface FileRoutesByFullPath {
   '/info/$slug': typeof InfoSlugRoute
   '/order/$orderId': typeof OrderOrderIdRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/superadmin/customers': typeof SuperadminCustomersRoute
+  '/superadmin/inventory': typeof SuperadminInventoryRoute
+  '/superadmin/login': typeof SuperadminLoginRoute
+  '/superadmin/settings': typeof SuperadminSettingsRoute
+  '/superadmin/': typeof SuperadminIndexRoute
+  '/superadmin/orders/$orderId': typeof SuperadminOrdersOrderIdRoute
+  '/superadmin/products/new': typeof SuperadminProductsNewRoute
+  '/superadmin/orders/': typeof SuperadminOrdersIndexRoute
+  '/superadmin/products/': typeof SuperadminProductsIndexRoute
+  '/superadmin/products/$productId/edit': typeof SuperadminProductsProductIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -102,6 +173,16 @@ export interface FileRoutesByTo {
   '/info/$slug': typeof InfoSlugRoute
   '/order/$orderId': typeof OrderOrderIdRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/superadmin/customers': typeof SuperadminCustomersRoute
+  '/superadmin/inventory': typeof SuperadminInventoryRoute
+  '/superadmin/login': typeof SuperadminLoginRoute
+  '/superadmin/settings': typeof SuperadminSettingsRoute
+  '/superadmin': typeof SuperadminIndexRoute
+  '/superadmin/orders/$orderId': typeof SuperadminOrdersOrderIdRoute
+  '/superadmin/products/new': typeof SuperadminProductsNewRoute
+  '/superadmin/orders': typeof SuperadminOrdersIndexRoute
+  '/superadmin/products': typeof SuperadminProductsIndexRoute
+  '/superadmin/products/$productId/edit': typeof SuperadminProductsProductIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,6 +197,16 @@ export interface FileRoutesById {
   '/info/$slug': typeof InfoSlugRoute
   '/order/$orderId': typeof OrderOrderIdRoute
   '/product/$productId': typeof ProductProductIdRoute
+  '/superadmin/customers': typeof SuperadminCustomersRoute
+  '/superadmin/inventory': typeof SuperadminInventoryRoute
+  '/superadmin/login': typeof SuperadminLoginRoute
+  '/superadmin/settings': typeof SuperadminSettingsRoute
+  '/superadmin/': typeof SuperadminIndexRoute
+  '/superadmin/orders/$orderId': typeof SuperadminOrdersOrderIdRoute
+  '/superadmin/products/new': typeof SuperadminProductsNewRoute
+  '/superadmin/orders/': typeof SuperadminOrdersIndexRoute
+  '/superadmin/products/': typeof SuperadminProductsIndexRoute
+  '/superadmin/products/$productId/edit': typeof SuperadminProductsProductIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,6 +222,16 @@ export interface FileRouteTypes {
     | '/info/$slug'
     | '/order/$orderId'
     | '/product/$productId'
+    | '/superadmin/customers'
+    | '/superadmin/inventory'
+    | '/superadmin/login'
+    | '/superadmin/settings'
+    | '/superadmin/'
+    | '/superadmin/orders/$orderId'
+    | '/superadmin/products/new'
+    | '/superadmin/orders/'
+    | '/superadmin/products/'
+    | '/superadmin/products/$productId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +245,16 @@ export interface FileRouteTypes {
     | '/info/$slug'
     | '/order/$orderId'
     | '/product/$productId'
+    | '/superadmin/customers'
+    | '/superadmin/inventory'
+    | '/superadmin/login'
+    | '/superadmin/settings'
+    | '/superadmin'
+    | '/superadmin/orders/$orderId'
+    | '/superadmin/products/new'
+    | '/superadmin/orders'
+    | '/superadmin/products'
+    | '/superadmin/products/$productId/edit'
   id:
     | '__root__'
     | '/'
@@ -157,6 +268,16 @@ export interface FileRouteTypes {
     | '/info/$slug'
     | '/order/$orderId'
     | '/product/$productId'
+    | '/superadmin/customers'
+    | '/superadmin/inventory'
+    | '/superadmin/login'
+    | '/superadmin/settings'
+    | '/superadmin/'
+    | '/superadmin/orders/$orderId'
+    | '/superadmin/products/new'
+    | '/superadmin/orders/'
+    | '/superadmin/products/'
+    | '/superadmin/products/$productId/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -171,6 +292,16 @@ export interface RootRouteChildren {
   InfoSlugRoute: typeof InfoSlugRoute
   OrderOrderIdRoute: typeof OrderOrderIdRoute
   ProductProductIdRoute: typeof ProductProductIdRoute
+  SuperadminCustomersRoute: typeof SuperadminCustomersRoute
+  SuperadminInventoryRoute: typeof SuperadminInventoryRoute
+  SuperadminLoginRoute: typeof SuperadminLoginRoute
+  SuperadminSettingsRoute: typeof SuperadminSettingsRoute
+  SuperadminIndexRoute: typeof SuperadminIndexRoute
+  SuperadminOrdersOrderIdRoute: typeof SuperadminOrdersOrderIdRoute
+  SuperadminProductsNewRoute: typeof SuperadminProductsNewRoute
+  SuperadminOrdersIndexRoute: typeof SuperadminOrdersIndexRoute
+  SuperadminProductsIndexRoute: typeof SuperadminProductsIndexRoute
+  SuperadminProductsProductIdEditRoute: typeof SuperadminProductsProductIdEditRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -252,6 +383,76 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/superadmin/': {
+      id: '/superadmin/'
+      path: '/superadmin'
+      fullPath: '/superadmin/'
+      preLoaderRoute: typeof SuperadminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/superadmin/customers': {
+      id: '/superadmin/customers'
+      path: '/superadmin/customers'
+      fullPath: '/superadmin/customers'
+      preLoaderRoute: typeof SuperadminCustomersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/superadmin/inventory': {
+      id: '/superadmin/inventory'
+      path: '/superadmin/inventory'
+      fullPath: '/superadmin/inventory'
+      preLoaderRoute: typeof SuperadminInventoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/superadmin/login': {
+      id: '/superadmin/login'
+      path: '/superadmin/login'
+      fullPath: '/superadmin/login'
+      preLoaderRoute: typeof SuperadminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/superadmin/settings': {
+      id: '/superadmin/settings'
+      path: '/superadmin/settings'
+      fullPath: '/superadmin/settings'
+      preLoaderRoute: typeof SuperadminSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/superadmin/orders/': {
+      id: '/superadmin/orders/'
+      path: '/superadmin/orders'
+      fullPath: '/superadmin/orders/'
+      preLoaderRoute: typeof SuperadminOrdersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/superadmin/orders/$orderId': {
+      id: '/superadmin/orders/$orderId'
+      path: '/superadmin/orders/$orderId'
+      fullPath: '/superadmin/orders/$orderId'
+      preLoaderRoute: typeof SuperadminOrdersOrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/superadmin/products/': {
+      id: '/superadmin/products/'
+      path: '/superadmin/products'
+      fullPath: '/superadmin/products/'
+      preLoaderRoute: typeof SuperadminProductsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/superadmin/products/new': {
+      id: '/superadmin/products/new'
+      path: '/superadmin/products/new'
+      fullPath: '/superadmin/products/new'
+      preLoaderRoute: typeof SuperadminProductsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/superadmin/products/$productId/edit': {
+      id: '/superadmin/products/$productId/edit'
+      path: '/superadmin/products/$productId/edit'
+      fullPath: '/superadmin/products/$productId/edit'
+      preLoaderRoute: typeof SuperadminProductsProductIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -267,6 +468,16 @@ const rootRouteChildren: RootRouteChildren = {
   InfoSlugRoute: InfoSlugRoute,
   OrderOrderIdRoute: OrderOrderIdRoute,
   ProductProductIdRoute: ProductProductIdRoute,
+  SuperadminCustomersRoute: SuperadminCustomersRoute,
+  SuperadminInventoryRoute: SuperadminInventoryRoute,
+  SuperadminLoginRoute: SuperadminLoginRoute,
+  SuperadminSettingsRoute: SuperadminSettingsRoute,
+  SuperadminIndexRoute: SuperadminIndexRoute,
+  SuperadminOrdersOrderIdRoute: SuperadminOrdersOrderIdRoute,
+  SuperadminProductsNewRoute: SuperadminProductsNewRoute,
+  SuperadminOrdersIndexRoute: SuperadminOrdersIndexRoute,
+  SuperadminProductsIndexRoute: SuperadminProductsIndexRoute,
+  SuperadminProductsProductIdEditRoute: SuperadminProductsProductIdEditRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

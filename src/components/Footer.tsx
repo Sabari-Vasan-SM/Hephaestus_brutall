@@ -73,7 +73,7 @@ export function Footer() {
         </nav>
 
         <div className="space-y-3">
-          <h3 className="label-xs text-zap">INFO</h3>
+          <h3 className="label-xs text-zap">INFO & ADMIN</h3>
           <div className="grid grid-cols-2 gap-x-4 gap-y-3 lg:grid-cols-1">
             {infoLinks.map((l) => (
               <Link
@@ -85,6 +85,12 @@ export function Footer() {
                 {l}
               </Link>
             ))}
+            <Link
+              to="/superadmin"
+              className="text-sm font-black uppercase text-zap underline hover:text-white"
+            >
+              SUPER ADMIN →
+            </Link>
           </div>
         </div>
       </div>

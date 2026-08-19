@@ -1,35 +1,72 @@
 # BRUTAL. — Streetwear With No Rules
 
-An independent, full-stack streetwear storefront web application built with **TanStack Start**, **React 19**, **Vite**, and **Tailwind CSS v4**, rendered in a high-impact **Neo-Brutalist** editorial design language.
+An independent, production-grade e-commerce application and **Super Admin Suite** built with **TanStack Start**, **React 19**, **Vite**, and **Tailwind CSS v4**, rendered in a high-impact **Neo-Brutalist** editorial design language.
+
+> **Zero Backend Required**: Fully functional client-side engine with persistent `localStorage` synchronization across all storefront operations, product catalogs, inventory adjustment audits, live checkout, and multi-stage order tracking.
 
 ---
 
-## ✨ Features
+## ⚡ Super Admin Access
 
-- **Bold Neo-Brutalist Aesthetic**: Heavy black borders (`border-[3px]`), hard offset ink drop-shadows (`brutal-shadow`), uppercase typography (`Archivo` & `Space Grotesk`), and vibrant accent highlights (`zap` neon and `flare` orange/red).
-- **Product Catalog & Filtering**:
-  - Browse limited drops with Category, Sort, Price, and Sale filters.
-  - Switch seamlessly between Grid and List view layouts.
-  - Real-time active filter chips and count indicator.
-- **Product Detail Pages (PDP)**:
-  - Dynamic image galleries with thumbnail selection.
-  - Interactive color & size selectors with stock indicators.
-  - Quantity controls, accordion details (materials, sizing, shipping), and related product recommendations.
-- **Cart & Wishlist Management**:
-  - Global persistent store for cart items with quantity updates and promo code engine (`BRUTAL10`, `DROP20`).
-  - One-click wishlist save/remove with counter badge in the navbar.
-- **Checkout & Order Confirmation**:
-  - Form validation with Zod schemas.
-  - Multi-step address input, delivery options, and payment selection.
-  - Generated order tracking summary and detailed receipts.
-- **Interactive Search Overlay**:
-  - Instant keyboard-accessible modal (`SearchOverlay`) with live keyword search and quick-filter category pills.
-- **Neo-Brutalist Feedback & Dialogs**:
-  - Custom Sonner toast notifications with ink borders and punchy brand colors.
-  - Styled modal dialogs and alert banners.
-- **Responsive Navigation**:
-  - Sticky header with quick-action links and live cart badges.
-  - Full-screen slide-out mobile drawer.
+Access the dedicated Super Admin suite at `/superadmin`:
+
+| Portal URL | Default Admin Email | Password |
+| :--- | :--- | :--- |
+| **`/superadmin`** (or `/superadmin/login`) | `admin@brutal.com` | `admin123` |
+
+*(A 1-click **"Fill Demo Admin Credentials"** button is also available directly on the login screen).*
+
+---
+
+## ✨ Features & Architecture
+
+### 1. Super Admin Management Suite (`/superadmin`)
+- **Executive Analytics Dashboard (`/superadmin`)**: Live gross merchandise value (GMV), total orders, units sold, low-stock alerts radar, and top-selling products.
+- **Product Catalog Manager (`/superadmin/products`)**:
+  - Full CRUD: Create, Edit, Duplicate, Toggle Status (`Active`/`Draft`), Delete.
+  - Multi-attribute filters: Category, Status, Stock Health, and Search.
+  - Live PDP preview shortcuts.
+- **Product Editor & Creator (`/superadmin/products/new`, `/superadmin/products/:productId/edit`)**:
+  - Image preset selector + URL input.
+  - Multi-size, color, badge, brand, SKU, and pricing configuration.
+- **Inventory Controller & Audit Ledger (`/superadmin/inventory`)**:
+  - Fast inline stock adjustments (`+1`, `+10`, `+25`, custom count).
+  - Search by SKU or product name with low-stock / sold-out filters.
+  - Immutable chronological inventory activity audit trail.
+- **Order Fulfillment Pipeline (`/superadmin/orders`)**:
+  - Filter orders by status (`PLACED`, `CONFIRMED`, `PACKED`, `SHIPPED`, `OUT_FOR_DELIVERY`, `DELIVERED`, `CANCELLED`).
+  - 1-click stage progression directly from table.
+- **Order Inspector (`/superadmin/orders/:orderId`)**:
+  - Detailed piece breakdown, customer info, shipping addresses, timeline event notes, and status transitions.
+- **Customer Directory (`/superadmin/customers`)**:
+  - Registered client list, total order metrics, lifetime spend, and address books.
+- **Store Settings & Promo Engine (`/superadmin/settings`)**:
+  - Store metadata, announcement banner toggles, free shipping thresholds.
+  - Promo code creator & manager (percentage / flat discount with expiry).
+  - 1-click Factory Demo Data Reset.
+
+### 2. Customer Storefront
+- **Dynamic Homepage & Catalog (`/`, `/shop`)**: Real-time product cards, brand filters, price sliders, size & color selectors, grid/list view switcher.
+- **Product Detail Pages (`/product/:productId`)**:
+  - Live stock status badges (*"In Stock"*, *"Only X Units Remaining"*, *"Out of Stock"*).
+  - Interactive customer review submission form saving dynamically to state.
+  - Dynamic "Goes With" recommendations.
+- **Cart & Bag Engine (`/cart`)**:
+  - Real-time stock-aware quantity controls.
+  - Free shipping progress bar (*"Add ₹X more for free shipping"*).
+  - Dynamic coupon validation and application.
+- **Checkout Pipeline (`/checkout`)**:
+  - Address auto-fill from saved customer addresses.
+  - Delivery speed selector (Standard vs Express Priority).
+  - Payment simulation (Cards, UPI, COD, Demo Authorization).
+  - Instant stock decrement and redirect to live order tracker.
+- **Real-Time Order Tracking (`/order/:orderId`)**:
+  - Visual status progress stepper synchronized in real-time with Super Admin fulfillment changes.
+  - Chronological timeline events and customer cancellation action (auto-restores stock).
+- **Customer Account Portal (`/account`, `/login`, `/signup`)**:
+  - Profile and contact details editor.
+  - Multi-address book (Add, Delete, Set Default).
+  - Complete order history and saved wishlist items.
 
 ---
 
@@ -37,43 +74,11 @@ An independent, full-stack streetwear storefront web application built with **Ta
 
 - **Framework**: [TanStack Start](https://tanstack.com/start) (Full-stack SSR React framework)
 - **Routing**: [TanStack Router](https://tanstack.com/router)
-- **State & Data Fetching**: [TanStack Query](https://tanstack.com/query) & React Context
+- **State & Storage**: Reactive React Context + `localStorage` event-synchronized engine
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) with custom `@utility` design tokens
-- **UI Components**: [Radix UI](https://www.radix-ui.com/) Primitives, [Sonner](https://sonner.emilkowal.ski/) Toasts, [Lucide React](https://lucide.dev/) Icons
-- **Forms & Validation**: [React Hook Form](https://react-hook-form.com/) & [Zod](https://zod.dev/)
+- **UI Components**: Radix UI Primitives, [Sonner](https://sonner.emilkowal.ski/) Toasts, [Lucide React](https://lucide.dev/) Icons
+- **Validation**: [Zod](https://zod.dev/) Schema Validation
 - **Bundler & Server Engine**: [Vite](https://vitejs.dev/) & [Nitro](https://nitro.unjs.io/)
-
----
-
-## 📂 Project Structure
-
-```text
-├── public/                  # Static assets & custom SVG/ICO favicons
-├── src/
-│   ├── components/          # Reusable UI components (Navbar, Footer, ProductCard, etc.)
-│   │   └── ui/              # Base primitives (Alert, Dialog, Button, Sonner, etc.)
-│   ├── hooks/               # Custom React hooks (use-mobile, etc.)
-│   ├── lib/                 # Store context, mock data, formatters, and utilities
-│   ├── routes/              # TanStack file-based routes
-│   │   ├── __root.tsx       # Root layout shell & global providers
-│   │   ├── index.tsx        # Homepage hero & drop highlights
-│   │   ├── shop.tsx         # Catalog with filter & sorting sidebar
-│   │   ├── product.$productId.tsx # Product detail view
-│   │   ├── cart.tsx         # Shopping cart & discount code application
-│   │   ├── checkout.tsx     # Order checkout & shipping form
-│   │   ├── order.$orderId.tsx # Order summary & confirmation
-│   │   ├── wishlist.tsx     # Saved items grid
-│   │   ├── account.tsx      # Customer profile & order history
-│   │   ├── login.tsx        # Authentication & sign-in
-│   │   ├── signup.tsx       # New customer registration
-│   │   └── info.$slug.tsx   # Brand editorial pages (shipping, sizing, faq)
-│   ├── router.tsx           # Router instance configuration
-│   ├── server.ts            # SSR entry handler
-│   └── styles.css           # Global Tailwind v4 styles and Neo-Brutalist tokens
-├── package.json             # Dependencies and npm scripts
-├── tsconfig.json            # TypeScript configuration
-└── vite.config.ts           # Vite + TanStack Start plugin configuration
-```
 
 ---
 
@@ -84,40 +89,22 @@ An independent, full-stack streetwear storefront web application built with **Ta
 - **Node.js**: `v20.0.0` or higher
 - **npm**: `v10.0.0` or higher
 
-### Installation
+### Installation & Run
 
-1. Clone the repository:
-
-   ```bash
-   git clone <repository-url>
-   cd Hephaestus_brutall
-   ```
-
-2. Install dependencies:
-
+1. Install dependencies:
    ```bash
    npm install
    ```
 
-3. Start the development server:
-
+2. Start the local development server:
    ```bash
    npm run dev
    ```
 
-4. Open [http://localhost:8080](http://localhost:8080) (or the port indicated in the terminal) in your browser.
-
----
-
-## 📜 Available Scripts
-
-| Script                | Command              | Description                                    |
-| :-------------------- | :------------------- | :--------------------------------------------- |
-| **`npm run dev`**     | `vite dev`           | Starts local dev server with HMR               |
-| **`npm run build`**   | `vite build`         | Compiles client and SSR bundles for production |
-| **`npm run preview`** | `vite preview`       | Runs local preview of the production build     |
-| **`npm run lint`**    | `eslint .`           | Runs ESLint to check for code quality          |
-| **`npm run format`**  | `prettier --write .` | Formats all code files with Prettier           |
+3. Build for production:
+   ```bash
+   npm run build
+   ```
 
 ---
 

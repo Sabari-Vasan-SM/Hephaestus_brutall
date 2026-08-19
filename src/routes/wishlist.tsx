@@ -19,8 +19,8 @@ export const Route = createFileRoute("/wishlist")({
 });
 
 function Wishlist() {
-  const { state } = useStore();
-  const saved = products.filter((p) => state.wishlist.includes(p.id));
+  const { state, activeProducts } = useStore();
+  const saved = activeProducts.filter((p) => state.wishlist.includes(p.id));
 
   return (
     <div className="mx-auto max-w-[1400px] px-4 py-10 sm:px-6 lg:px-10">

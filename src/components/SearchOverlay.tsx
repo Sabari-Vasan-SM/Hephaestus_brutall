@@ -9,7 +9,7 @@ import { useStore } from "@/lib/store";
 export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [q, setQ] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const { state, pushSearch } = useStore();
+  const { state, pushSearch, activeProducts } = useStore();
 
   useEffect(() => {
     if (!open) return;
@@ -28,15 +28,15 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
   const results = useMemo(() => {
     const term = q.trim().toLowerCase();
     if (!term) return [];
-    return products
+    return activeProducts
       .filter((p) =>
-        [p.name, p.categoryLabel, p.category, p.subtitle, ...p.colors]
+        [p.name, p.brand, p.categoryLabel, p.category, p.subtitle, ...p.colors]
           .join(" ")
           .toLowerCase()
           .includes(term),
       )
       .slice(0, 6);
-  }, [q]);
+  }, [q, activeProducts]);
 
   if (!open) return null;
 
