@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, UserCheck, KeyRound } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -22,14 +22,14 @@ export const Route = createFileRoute("/login")({
 });
 
 const schema = z.object({
-  email: z.string().trim().email("Enter a valid email").max(255),
-  password: z.string().min(6, "At least 6 characters").max(72),
+  email: z.string().trim().email("Enter a valid email address").max(255),
+  password: z.string().min(1, "Enter your password"),
 });
 
 function Login() {
-  const { signIn } = useStore();
+  const { loginCustomer, state } = useStore();
   const navigate = useNavigate();
-  const [values, setValues] = useState({ email: "", password: "" });
+  const [values, setValues] = useState({ email: "alex@example.com", password: "password123" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
@@ -44,73 +44,90 @@ function Login() {
     }
     setErrors({});
     setLoading(true);
+
     window.setTimeout(() => {
-      signIn({ name: parsed.data.email.split("@")[0] ?? "Member", email: parsed.data.email });
+      const res = loginCustomer(parsed.data.email, parsed.data.password);
       setLoading(false);
-      toast.success("WELCOME BACK");
-      navigate({ to: "/account" });
-    }, 500);
+
+      if (res.ok) {
+        toast.success("WELCOME BACK", { description: `Signed in as ${res.user?.name}` });
+        navigate({ to: "/account" });
+      } else {
+        toast.error("SIGN IN FAILED", { description: res.message });
+      }
+    }, 400);
+  };
+
+  const handleSelectDemoUser = (email: string) => {
+    setValues({ email, password: "password123" });
+    toast.info("DEMO PROFILE LOADED", { description: email });
   };
 
   return (
     <div className="mx-auto grid max-w-md px-4 py-14 sm:px-6">
-      <h1 className="text-[clamp(2.5rem,10vw,4.5rem)]">
-        Welcome
-        <br />
-        back.
-      </h1>
-      <p className="mt-3 text-sm text-muted-foreground">Sign in to continue.</p>
+      <header className="mb-6">
+        <span className="label-xs bg-foreground px-2 py-1 text-background">MEMBERSHIP</span>
+        <h1 className="mt-4 text-[clamp(2.5rem,10vw,4.5rem)] font-display font-black uppercase leading-[0.9] tracking-tight">
+          Welcome
+          <br />
+          back.
+        </h1>
+        <p className="mt-3 text-xs text-muted-foreground">Sign in to track live drops and dispatches.</p>
+      </header>
 
       <form
         onSubmit={submit}
-        className="mt-8 space-y-4 border-[3px] border-foreground p-6 brutal-shadow"
+        className="space-y-4 border-[3px] border-foreground bg-background p-6 brutal-shadow"
       >
-        <Field label="EMAIL" error={errors["email"]}>
+        <Field label="EMAIL ADDRESS" error={errors["email"]}>
           <Input
             type="email"
+            required
             autoComplete="email"
             value={values.email}
             onChange={(e) => setValues((v) => ({ ...v, email: e.target.value }))}
+            className="text-xs font-bold"
           />
         </Field>
         <Field label="PASSWORD" error={errors["password"]}>
           <Input
             type="password"
+            required
             autoComplete="current-password"
             value={values.password}
             onChange={(e) => setValues((v) => ({ ...v, password: e.target.value }))}
+            className="text-xs font-mono"
           />
         </Field>
-        <button
-          type="button"
-          className="label-xs underline"
-          onClick={() =>
-            toast("PASSWORD RESET", { description: "Reset links are not available in this demo." })
-          }
-        >
-          FORGOT PASSWORD?
-        </button>
-        <Button type="submit" variant="flare" size="lg" full disabled={loading}>
-          {loading ? "SIGNING IN…" : "Sign in"}{" "}
+
+        <Button type="submit" variant="flare" size="lg" full disabled={loading} className="text-xs font-black uppercase text-white hover:bg-black py-4">
+          {loading ? "AUTHENTICATING…" : "SIGN IN"}{" "}
           <ArrowRight width={16} height={16} strokeWidth={3} />
         </Button>
-        <div className="grid gap-2 pt-2">
-          {["CONTINUE WITH GOOGLE", "CONTINUE WITH APPLE"].map((l) => (
-            <Button
-              key={l}
-              type="button"
-              variant="outline"
-              onClick={() =>
-                toast("SOCIAL SIGN-IN", { description: "Not connected in this demo." })
-              }
-            >
-              {l}
-            </Button>
-          ))}
+
+        {/* 1-Click Demo Profiles */}
+        <div className="border-t border-zinc-200 pt-4 space-y-2">
+          <span className="label-xs text-muted-foreground block flex items-center gap-1.5">
+            <KeyRound className="h-3 w-3" />
+            1-CLICK DEMO CLIENT PROFILES:
+          </span>
+          <div className="grid grid-cols-3 gap-1.5 text-center">
+            {state.customers.slice(0, 3).map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => handleSelectDemoUser(c.email)}
+                className="border border-foreground bg-smoke/80 py-1.5 text-[0.65rem] font-bold uppercase hover:bg-zap press truncate px-1"
+              >
+                {c.name.split(" ")[0]}
+              </button>
+            ))}
+          </div>
         </div>
-        <p className="label-xs pt-2 text-muted-foreground">
-          NEW HERE?{" "}
-          <Link to="/signup" className="text-flare underline">
+
+        <p className="label-xs pt-2 text-muted-foreground text-center">
+          NEW TO BRUTAL.?{" "}
+          <Link to="/signup" className="text-flare underline font-black">
             CREATE ACCOUNT
           </Link>
         </p>
@@ -118,3 +135,4 @@ function Login() {
     </div>
   );
 }
+

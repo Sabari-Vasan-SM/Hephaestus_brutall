@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Heart, Menu, Search, ShoppingBag, User, X } from "lucide-react";
+import { Heart, Menu, Search, ShoppingBag, User, X, ShieldAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { SearchOverlay } from "@/components/SearchOverlay";
 import { useStore } from "@/lib/store";
@@ -61,6 +61,15 @@ export function Navbar() {
           </nav>
 
           <div className="ml-auto flex items-center gap-2 lg:ml-4">
+            {/* Super Admin Quick Link */}
+            <Link
+              to="/superadmin"
+              className="hidden xl:inline-flex items-center gap-1.5 border-[2px] border-foreground bg-zap px-2.5 py-1.5 text-[0.65rem] font-black uppercase press hover:bg-foreground hover:text-white"
+            >
+              <ShieldAlert className="h-3.5 w-3.5 text-flare" />
+              <span>SUPER ADMIN</span>
+            </Link>
+
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
@@ -169,6 +178,13 @@ export function Navbar() {
                 >
                   {state.user ? "MY ACCOUNT" : "SIGN IN"}
                 </Link>
+                <Link
+                  to="/superadmin"
+                  onClick={() => setMenuOpen(false)}
+                  className="label-xs border-[3px] border-foreground bg-foreground text-background px-4 py-3 font-black uppercase"
+                >
+                  SUPER ADMIN PORTAL
+                </Link>
               </div>
             </nav>
           </div>
@@ -179,3 +195,4 @@ export function Navbar() {
     </>
   );
 }
+

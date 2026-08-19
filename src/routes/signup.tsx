@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -23,9 +23,10 @@ export const Route = createFileRoute("/signup")({
 
 const schema = z
   .object({
-    name: z.string().trim().min(2, "Enter your name").max(100),
-    email: z.string().trim().email("Enter a valid email").max(255),
-    password: z.string().min(6, "At least 6 characters").max(72),
+    name: z.string().trim().min(2, "Enter your full name").max(100),
+    email: z.string().trim().email("Enter a valid email address").max(255),
+    phone: z.string().trim().min(8, "Enter a valid phone number").max(20),
+    password: z.string().min(6, "Password must be at least 6 characters").max(72),
     confirm: z.string(),
   })
   .refine((d) => d.password === d.confirm, {
@@ -34,9 +35,9 @@ const schema = z
   });
 
 function Signup() {
-  const { signIn } = useStore();
+  const { registerCustomer } = useStore();
   const navigate = useNavigate();
-  const [values, setValues] = useState({ name: "", email: "", password: "", confirm: "" });
+  const [values, setValues] = useState({ name: "", email: "", phone: "", password: "", confirm: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
@@ -51,66 +52,102 @@ function Signup() {
     }
     setErrors({});
     setLoading(true);
+
     window.setTimeout(() => {
-      signIn({ name: parsed.data.name, email: parsed.data.email });
+      const res = registerCustomer({
+        name: parsed.data.name,
+        email: parsed.data.email,
+        phone: parsed.data.phone,
+        password: parsed.data.password,
+      });
       setLoading(false);
-      toast.success("YOU'RE IN");
-      navigate({ to: "/account" });
-    }, 500);
+
+      if (res.ok) {
+        toast.success("ACCOUNT CREATED", { description: "Welcome to BRUTAL. Collective" });
+        navigate({ to: "/account" });
+      } else {
+        toast.error("REGISTRATION FAILED", { description: res.message });
+      }
+    }, 450);
   };
 
   return (
     <div className="mx-auto grid max-w-md px-4 py-14 sm:px-6">
-      <h1 className="text-[clamp(2.5rem,10vw,4.5rem)]">
-        Join
-        <br />
-        the
-        <br />
-        <span className="bg-zap px-2">drop.</span>
-      </h1>
+      <header className="mb-6">
+        <span className="label-xs bg-foreground px-2 py-1 text-background">COLLECTIVE REGISTRATION</span>
+        <h1 className="mt-4 text-[clamp(2.5rem,10vw,4.5rem)] font-display font-black uppercase leading-[0.9] tracking-tight">
+          Join
+          <br />
+          the
+          <br />
+          <span className="bg-zap px-2">drop.</span>
+        </h1>
+        <p className="mt-3 text-xs text-muted-foreground">Access private archival streetwear releases.</p>
+      </header>
 
       <form
         onSubmit={submit}
-        className="mt-8 space-y-4 border-[3px] border-foreground p-6 brutal-shadow"
+        className="space-y-4 border-[3px] border-foreground bg-background p-6 brutal-shadow"
       >
-        <Field label="NAME" error={errors["name"]}>
+        <Field label="FULL NAME *" error={errors["name"]}>
           <Input
             autoComplete="name"
+            required
             value={values.name}
             onChange={(e) => setValues((v) => ({ ...v, name: e.target.value }))}
+            className="text-xs font-bold"
           />
         </Field>
-        <Field label="EMAIL" error={errors["email"]}>
+        <Field label="EMAIL ADDRESS *" error={errors["email"]}>
           <Input
             type="email"
+            required
             autoComplete="email"
             value={values.email}
             onChange={(e) => setValues((v) => ({ ...v, email: e.target.value }))}
+            className="text-xs font-bold"
           />
         </Field>
-        <Field label="PASSWORD" error={errors["password"]}>
+        <Field label="PHONE NUMBER *" error={errors["phone"]}>
+          <Input
+            type="tel"
+            required
+            autoComplete="tel"
+            placeholder="+91 98765 43210"
+            value={values.phone}
+            onChange={(e) => setValues((v) => ({ ...v, phone: e.target.value }))}
+            className="text-xs font-bold"
+          />
+        </Field>
+        <Field label="PASSWORD *" error={errors["password"]}>
           <Input
             type="password"
+            required
             autoComplete="new-password"
             value={values.password}
             onChange={(e) => setValues((v) => ({ ...v, password: e.target.value }))}
+            className="text-xs font-mono"
           />
         </Field>
-        <Field label="CONFIRM PASSWORD" error={errors["confirm"]}>
+        <Field label="CONFIRM PASSWORD *" error={errors["confirm"]}>
           <Input
             type="password"
+            required
             autoComplete="new-password"
             value={values.confirm}
             onChange={(e) => setValues((v) => ({ ...v, confirm: e.target.value }))}
+            className="text-xs font-mono"
           />
         </Field>
-        <Button type="submit" variant="flare" size="lg" full disabled={loading}>
-          {loading ? "CREATING…" : "Create account"}{" "}
+
+        <Button type="submit" variant="flare" size="lg" full disabled={loading} className="text-xs font-black uppercase text-white hover:bg-black py-4">
+          {loading ? "REGISTERING…" : "CREATE ACCOUNT"}{" "}
           <ArrowRight width={16} height={16} strokeWidth={3} />
         </Button>
-        <p className="label-xs pt-2 text-muted-foreground">
+
+        <p className="label-xs pt-2 text-muted-foreground text-center">
           ALREADY A MEMBER?{" "}
-          <Link to="/login" className="text-flare underline">
+          <Link to="/login" className="text-flare underline font-black">
             SIGN IN
           </Link>
         </p>
@@ -118,3 +155,4 @@ function Signup() {
     </div>
   );
 }
+
