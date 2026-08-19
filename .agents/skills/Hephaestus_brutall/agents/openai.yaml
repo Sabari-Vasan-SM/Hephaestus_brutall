@@ -1,0 +1,6 @@
+interface:
+  display_name: "Hephaestus Brutall"
+  short_description: "Repo-specific patterns and workflows for Hephaestus_brutall"
+  default_prompt: "Use the Hephaestus_brutall repo skill to follow existing architecture, testing, and workflow conventions."
+policy:
+  allow_implicit_invocation: true
