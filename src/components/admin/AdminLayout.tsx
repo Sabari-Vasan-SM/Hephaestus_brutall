@@ -6,6 +6,7 @@ import {
   ShoppingBag,
   Users,
   Settings,
+  FolderTree,
   ExternalLink,
   LogOut,
   Menu,
@@ -30,6 +31,7 @@ const navItems = [
   { href: "/superadmin/inventory", label: "INVENTORY", icon: Boxes },
   { href: "/superadmin/orders", label: "ORDERS", icon: ShoppingBag },
   { href: "/superadmin/customers", label: "CUSTOMERS", icon: Users },
+  { href: "/superadmin/taxonomy", label: "DROPDOWNS & TAXONOMY", icon: FolderTree },
   { href: "/superadmin/settings", label: "SETTINGS", icon: Settings },
 ];
 

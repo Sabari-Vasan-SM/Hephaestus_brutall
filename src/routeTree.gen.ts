@@ -25,6 +25,7 @@ import { Route as SuperadminCustomersRouteImport } from './routes/superadmin.cus
 import { Route as SuperadminInventoryRouteImport } from './routes/superadmin.inventory'
 import { Route as SuperadminLoginRouteImport } from './routes/superadmin.login'
 import { Route as SuperadminSettingsRouteImport } from './routes/superadmin.settings'
+import { Route as SuperadminTaxonomyRouteImport } from './routes/superadmin.taxonomy'
 import { Route as SuperadminOrdersIndexRouteImport } from './routes/superadmin.orders.index'
 import { Route as SuperadminOrdersOrderIdRouteImport } from './routes/superadmin.orders.$orderId'
 import { Route as SuperadminProductsIndexRouteImport } from './routes/superadmin.products.index'
@@ -111,6 +112,11 @@ const SuperadminSettingsRoute = SuperadminSettingsRouteImport.update({
   path: '/superadmin/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SuperadminTaxonomyRoute = SuperadminTaxonomyRouteImport.update({
+  id: '/superadmin/taxonomy',
+  path: '/superadmin/taxonomy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SuperadminOrdersIndexRoute = SuperadminOrdersIndexRouteImport.update({
   id: '/superadmin/orders/',
   path: '/superadmin/orders/',
@@ -154,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/superadmin/inventory': typeof SuperadminInventoryRoute
   '/superadmin/login': typeof SuperadminLoginRoute
   '/superadmin/settings': typeof SuperadminSettingsRoute
+  '/superadmin/taxonomy': typeof SuperadminTaxonomyRoute
   '/superadmin/': typeof SuperadminIndexRoute
   '/superadmin/orders/$orderId': typeof SuperadminOrdersOrderIdRoute
   '/superadmin/products/new': typeof SuperadminProductsNewRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByTo {
   '/superadmin/inventory': typeof SuperadminInventoryRoute
   '/superadmin/login': typeof SuperadminLoginRoute
   '/superadmin/settings': typeof SuperadminSettingsRoute
+  '/superadmin/taxonomy': typeof SuperadminTaxonomyRoute
   '/superadmin': typeof SuperadminIndexRoute
   '/superadmin/orders/$orderId': typeof SuperadminOrdersOrderIdRoute
   '/superadmin/products/new': typeof SuperadminProductsNewRoute
@@ -201,6 +209,7 @@ export interface FileRoutesById {
   '/superadmin/inventory': typeof SuperadminInventoryRoute
   '/superadmin/login': typeof SuperadminLoginRoute
   '/superadmin/settings': typeof SuperadminSettingsRoute
+  '/superadmin/taxonomy': typeof SuperadminTaxonomyRoute
   '/superadmin/': typeof SuperadminIndexRoute
   '/superadmin/orders/$orderId': typeof SuperadminOrdersOrderIdRoute
   '/superadmin/products/new': typeof SuperadminProductsNewRoute
@@ -226,6 +235,7 @@ export interface FileRouteTypes {
     | '/superadmin/inventory'
     | '/superadmin/login'
     | '/superadmin/settings'
+    | '/superadmin/taxonomy'
     | '/superadmin/'
     | '/superadmin/orders/$orderId'
     | '/superadmin/products/new'
@@ -249,6 +259,7 @@ export interface FileRouteTypes {
     | '/superadmin/inventory'
     | '/superadmin/login'
     | '/superadmin/settings'
+    | '/superadmin/taxonomy'
     | '/superadmin'
     | '/superadmin/orders/$orderId'
     | '/superadmin/products/new'
@@ -272,6 +283,7 @@ export interface FileRouteTypes {
     | '/superadmin/inventory'
     | '/superadmin/login'
     | '/superadmin/settings'
+    | '/superadmin/taxonomy'
     | '/superadmin/'
     | '/superadmin/orders/$orderId'
     | '/superadmin/products/new'
@@ -296,6 +308,7 @@ export interface RootRouteChildren {
   SuperadminInventoryRoute: typeof SuperadminInventoryRoute
   SuperadminLoginRoute: typeof SuperadminLoginRoute
   SuperadminSettingsRoute: typeof SuperadminSettingsRoute
+  SuperadminTaxonomyRoute: typeof SuperadminTaxonomyRoute
   SuperadminIndexRoute: typeof SuperadminIndexRoute
   SuperadminOrdersOrderIdRoute: typeof SuperadminOrdersOrderIdRoute
   SuperadminProductsNewRoute: typeof SuperadminProductsNewRoute
@@ -418,6 +431,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperadminSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/superadmin/taxonomy': {
+      id: '/superadmin/taxonomy'
+      path: '/superadmin/taxonomy'
+      fullPath: '/superadmin/taxonomy'
+      preLoaderRoute: typeof SuperadminTaxonomyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/superadmin/orders/': {
       id: '/superadmin/orders/'
       path: '/superadmin/orders'
@@ -472,6 +492,7 @@ const rootRouteChildren: RootRouteChildren = {
   SuperadminInventoryRoute: SuperadminInventoryRoute,
   SuperadminLoginRoute: SuperadminLoginRoute,
   SuperadminSettingsRoute: SuperadminSettingsRoute,
+  SuperadminTaxonomyRoute: SuperadminTaxonomyRoute,
   SuperadminIndexRoute: SuperadminIndexRoute,
   SuperadminOrdersOrderIdRoute: SuperadminOrdersOrderIdRoute,
   SuperadminProductsNewRoute: SuperadminProductsNewRoute,

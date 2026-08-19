@@ -14,6 +14,11 @@ import {
   initialCoupons,
   initialInventoryLogs,
   initialStoreSettings,
+  BRANDS,
+  categories as defaultCategories,
+  initialCategoryLabels,
+  initialSubtitlePresets,
+  initialBadges,
   type Product,
   type Order,
   type OrderStatus,
@@ -23,6 +28,7 @@ import {
   type StoreSettings,
   type Address,
   type Review,
+  type CategoryItem,
 } from "./data";
 
 export type CartItem = {
@@ -40,6 +46,14 @@ export type AdminSession = {
   role: "superadmin";
 };
 
+export type TaxonomyState = {
+  brands: string[];
+  categories: CategoryItem[];
+  categoryLabels: string[];
+  subtitlePresets: string[];
+  badges: string[];
+};
+
 type State = {
   products: Product[];
   orders: Order[];
@@ -47,6 +61,7 @@ type State = {
   customers: CustomerUser[];
   coupons: Coupon[];
   settings: StoreSettings;
+  taxonomy: TaxonomyState;
   cart: CartItem[];
   wishlist: string[];
   user: CustomerUser | null;
@@ -63,6 +78,13 @@ const DEFAULT_STATE: State = {
   customers: initialCustomers,
   coupons: initialCoupons,
   settings: initialStoreSettings,
+  taxonomy: {
+    brands: [...BRANDS],
+    categories: [...defaultCategories],
+    categoryLabels: [...initialCategoryLabels],
+    subtitlePresets: [...initialSubtitlePresets],
+    badges: [...initialBadges],
+  },
   cart: [],
   wishlist: [],
   user: null,
@@ -130,7 +152,24 @@ type StoreCtx = {
   toggleCouponStatus: (id: string) => void;
   updateSettings: (settings: Partial<StoreSettings>) => void;
   resetToDemoData: () => void;
+  // Dynamic Taxonomy & Dropdown Options
+  brands: string[];
+  categories: CategoryItem[];
+  categoryLabels: string[];
+  subtitlePresets: string[];
+  badges: string[];
+  addBrand: (brand: string) => void;
+  deleteBrand: (brand: string) => void;
+  addCategory: (category: CategoryItem) => void;
+  deleteCategory: (slug: string) => void;
+  addCategoryLabel: (label: string) => void;
+  deleteCategoryLabel: (label: string) => void;
+  addSubtitlePreset: (subtitle: string) => void;
+  deleteSubtitlePreset: (subtitle: string) => void;
+  addBadge: (badge: string) => void;
+  deleteBadge: (badge: string) => void;
 };
+
 
 const StoreContext = createContext<StoreCtx | null>(null);
 
@@ -154,6 +193,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           coupons: parsed.coupons && parsed.coupons.length > 0 ? parsed.coupons : initialCoupons,
           inventoryLogs: parsed.inventoryLogs && parsed.inventoryLogs.length > 0 ? parsed.inventoryLogs : initialInventoryLogs,
           settings: parsed.settings ? { ...initialStoreSettings, ...parsed.settings } : initialStoreSettings,
+          taxonomy: parsed.taxonomy && parsed.taxonomy.brands ? parsed.taxonomy : DEFAULT_STATE.taxonomy,
         });
       }
     } catch {
@@ -196,6 +236,145 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     () => state.products.filter((p) => p.status === "active"),
     [state.products],
   );
+
+  // Dynamic Taxonomy State Handlers
+  const addBrand = useCallback((brand: string) => {
+    const trimmed = brand.trim();
+    if (!trimmed) return;
+    setState((s) => {
+      const existing = s.taxonomy?.brands ?? [...BRANDS];
+      if (existing.includes(trimmed)) return s;
+      return {
+        ...s,
+        taxonomy: {
+          ...s.taxonomy,
+          brands: [...existing, trimmed],
+        },
+      };
+    });
+  }, []);
+
+  const deleteBrand = useCallback((brand: string) => {
+    setState((s) => ({
+      ...s,
+      taxonomy: {
+        ...s.taxonomy,
+        brands: (s.taxonomy?.brands ?? [...BRANDS]).filter((b) => b !== brand),
+      },
+    }));
+  }, []);
+
+  const addCategory = useCallback((category: CategoryItem) => {
+    const slug = category.slug.toLowerCase().trim();
+    if (!slug) return;
+    setState((s) => {
+      const existing = s.taxonomy?.categories ?? [...defaultCategories];
+      if (existing.some((c) => c.slug === slug)) {
+        return {
+          ...s,
+          taxonomy: {
+            ...s.taxonomy,
+            categories: existing.map((c) => (c.slug === slug ? { ...c, ...category } : c)),
+          },
+        };
+      }
+      return {
+        ...s,
+        taxonomy: {
+          ...s.taxonomy,
+          categories: [...existing, { ...category, slug }],
+        },
+      };
+    });
+  }, []);
+
+  const deleteCategory = useCallback((slug: string) => {
+    setState((s) => ({
+      ...s,
+      taxonomy: {
+        ...s.taxonomy,
+        categories: (s.taxonomy?.categories ?? [...defaultCategories]).filter((c) => c.slug !== slug),
+      },
+    }));
+  }, []);
+
+  const addCategoryLabel = useCallback((label: string) => {
+    const trimmed = label.trim();
+    if (!trimmed) return;
+    setState((s) => {
+      const existing = s.taxonomy?.categoryLabels ?? [...initialCategoryLabels];
+      if (existing.includes(trimmed)) return s;
+      return {
+        ...s,
+        taxonomy: {
+          ...s.taxonomy,
+          categoryLabels: [...existing, trimmed],
+        },
+      };
+    });
+  }, []);
+
+  const deleteCategoryLabel = useCallback((label: string) => {
+    setState((s) => ({
+      ...s,
+      taxonomy: {
+        ...s.taxonomy,
+        categoryLabels: (s.taxonomy?.categoryLabels ?? [...initialCategoryLabels]).filter((l) => l !== label),
+      },
+    }));
+  }, []);
+
+  const addSubtitlePreset = useCallback((subtitle: string) => {
+    const trimmed = subtitle.trim();
+    if (!trimmed) return;
+    setState((s) => {
+      const existing = s.taxonomy?.subtitlePresets ?? [...initialSubtitlePresets];
+      if (existing.includes(trimmed)) return s;
+      return {
+        ...s,
+        taxonomy: {
+          ...s.taxonomy,
+          subtitlePresets: [...existing, trimmed],
+        },
+      };
+    });
+  }, []);
+
+  const deleteSubtitlePreset = useCallback((subtitle: string) => {
+    setState((s) => ({
+      ...s,
+      taxonomy: {
+        ...s.taxonomy,
+        subtitlePresets: (s.taxonomy?.subtitlePresets ?? [...initialSubtitlePresets]).filter((st) => st !== subtitle),
+      },
+    }));
+  }, []);
+
+  const addBadge = useCallback((badge: string) => {
+    const trimmed = badge.toUpperCase().trim();
+    if (!trimmed) return;
+    setState((s) => {
+      const existing = s.taxonomy?.badges ?? [...initialBadges];
+      if (existing.includes(trimmed)) return s;
+      return {
+        ...s,
+        taxonomy: {
+          ...s.taxonomy,
+          badges: [...existing, trimmed],
+        },
+      };
+    });
+  }, []);
+
+  const deleteBadge = useCallback((badge: string) => {
+    setState((s) => ({
+      ...s,
+      taxonomy: {
+        ...s.taxonomy,
+        badges: (s.taxonomy?.badges ?? [...initialBadges]).filter((b) => b !== badge),
+      },
+    }));
+  }, []);
 
   // CART LOGIC
   const addToCart = useCallback((product: Product, size: string, color: string, qty = 1) => {
@@ -911,6 +1090,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     toggleCouponStatus,
     updateSettings,
     resetToDemoData,
+    // Dynamic Taxonomy Dropdown Lists & Actions
+    brands: state.taxonomy?.brands ?? [...BRANDS],
+    categories: state.taxonomy?.categories ?? [...defaultCategories],
+    categoryLabels: state.taxonomy?.categoryLabels ?? [...initialCategoryLabels],
+    subtitlePresets: state.taxonomy?.subtitlePresets ?? [...initialSubtitlePresets],
+    badges: state.taxonomy?.badges ?? [...initialBadges],
+    addBrand,
+    deleteBrand,
+    addCategory,
+    deleteCategory,
+    addCategoryLabel,
+    deleteCategoryLabel,
+    addSubtitlePreset,
+    deleteSubtitlePreset,
+    addBadge,
+    deleteBadge,
   };
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;

@@ -38,13 +38,22 @@ const presetImages = [
 const availableBadges: Badge[] = ["NEW", "SALE", "BESTSELLER", "LIMITED", "HOT", "EXCLUSIVE"];
 
 function NewProductPage() {
-  const { addProduct } = useStore();
+  const {
+    addProduct,
+    brands,
+    categories,
+    categoryLabels,
+    subtitlePresets,
+    badges: storeBadges,
+    addBrand,
+    addCategory,
+  } = useStore();
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
-  const [brand, setBrand] = useState<string>("BRUTAL. LABS");
+  const [brand, setBrand] = useState<string>(brands[0] ?? "BRUTAL. LABS");
   const [sku, setSku] = useState("BRT-NEW-" + Math.floor(100 + Math.random() * 900));
-  const [category, setCategory] = useState<ProductCategory>("men");
+  const [category, setCategory] = useState<string>(categories[0]?.slug ?? "men");
   const [categoryLabel, setCategoryLabel] = useState("T-Shirts");
   const [subcategory, setSubcategory] = useState("Heavyweight Tops");
   const [subtitle, setSubtitle] = useState("Black / Unisex");
@@ -69,6 +78,39 @@ function NewProductPage() {
   const [featured, setFeatured] = useState(true);
   const [trending, setTrending] = useState(false);
   const [newArrival, setNewArrival] = useState(true);
+
+  // Inline Quick Add Modals
+  const [inlineBrandOpen, setInlineBrandOpen] = useState(false);
+  const [inlineBrandInput, setInlineBrandInput] = useState("");
+  const [inlineCatOpen, setInlineCatOpen] = useState(false);
+  const [inlineCatTitle, setInlineCatTitle] = useState("");
+  const [inlineCatSlug, setInlineCatSlug] = useState("");
+
+  const handleQuickAddBrand = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inlineBrandInput.trim()) return;
+    addBrand(inlineBrandInput.trim());
+    setBrand(inlineBrandInput.trim());
+    toast.success("BRAND ADDED & SELECTED", { description: inlineBrandInput.trim() });
+    setInlineBrandInput("");
+    setInlineBrandOpen(false);
+  };
+
+  const handleQuickAddCat = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inlineCatTitle.trim()) return;
+    const slug = (inlineCatSlug.trim() || inlineCatTitle.trim()).toLowerCase().replace(/\s+/g, "-");
+    addCategory({
+      title: inlineCatTitle.trim(),
+      slug,
+      image: p1,
+    });
+    setCategory(slug);
+    toast.success("CATEGORY ADDED & SELECTED", { description: inlineCatTitle.trim() });
+    setInlineCatTitle("");
+    setInlineCatSlug("");
+    setInlineCatOpen(false);
+  };
 
   const toggleBadge = (b: Badge) => {
     setBadges((prev) => (prev.includes(b) ? prev.filter((x) => x !== b) : [...prev, b]));
@@ -131,13 +173,21 @@ function NewProductPage() {
       title="CREATE NEW PRODUCT"
       subtitle="Register a new piece into the store inventory."
       action={
-        <Link
-          to="/superadmin/products"
-          className="flex items-center gap-2 border-[2px] border-foreground bg-background px-4 py-2 text-xs font-bold uppercase press hover:bg-smoke"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>BACK TO CATALOG</span>
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            to="/superadmin/taxonomy"
+            className="flex items-center gap-1.5 border-[2px] border-foreground bg-zap px-3 py-2 text-xs font-black uppercase press hover:bg-foreground hover:text-white"
+          >
+            <span>MANAGE ALL DROPDOWNS</span>
+          </Link>
+          <Link
+            to="/superadmin/products"
+            className="flex items-center gap-2 border-[2px] border-foreground bg-background px-4 py-2 text-xs font-bold uppercase press hover:bg-smoke"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>BACK TO CATALOG</span>
+          </Link>
+        </div>
       }
     >
       <form onSubmit={handleSubmit} className="space-y-8">
@@ -165,13 +215,42 @@ function NewProductPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="label-xs block mb-1">BRAND / LABEL</label>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="label-xs">BRAND / LABEL *</label>
+                      <button
+                        type="button"
+                        onClick={() => setInlineBrandOpen(!inlineBrandOpen)}
+                        className="text-[0.65rem] font-bold text-flare underline hover:text-foreground"
+                      >
+                        {inlineBrandOpen ? "Cancel" : "+ Add Brand"}
+                      </button>
+                    </div>
+
+                    {inlineBrandOpen ? (
+                      <div className="flex gap-1.5 mb-2">
+                        <input
+                          type="text"
+                          placeholder="New brand name"
+                          value={inlineBrandInput}
+                          onChange={(e) => setInlineBrandInput(e.target.value)}
+                          className="flex-1 border-[2px] border-foreground p-2 text-xs font-bold uppercase bg-zap/20"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleQuickAddBrand}
+                          className="border-[2px] border-foreground bg-foreground text-background px-3 text-xs font-black uppercase"
+                        >
+                          SAVE
+                        </button>
+                      </div>
+                    ) : null}
+
                     <select
                       value={brand}
                       onChange={(e) => setBrand(e.target.value)}
                       className="w-full border-[2px] border-foreground bg-smoke/40 p-3 text-xs font-bold uppercase"
                     >
-                      {BRANDS.map((b) => (
+                      {brands.map((b) => (
                         <option key={b} value={b}>
                           {b}
                         </option>
@@ -193,40 +272,81 @@ function NewProductPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="label-xs block mb-1">PRIMARY CATEGORY</label>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="label-xs">PRIMARY CATEGORY</label>
+                      <button
+                        type="button"
+                        onClick={() => setInlineCatOpen(!inlineCatOpen)}
+                        className="text-[0.65rem] font-bold text-flare underline hover:text-foreground"
+                      >
+                        {inlineCatOpen ? "Cancel" : "+ Add Category"}
+                      </button>
+                    </div>
+
+                    {inlineCatOpen ? (
+                      <div className="flex gap-1.5 mb-2">
+                        <input
+                          type="text"
+                          placeholder="Category title"
+                          value={inlineCatTitle}
+                          onChange={(e) => setInlineCatTitle(e.target.value)}
+                          className="flex-1 border-[2px] border-foreground p-2 text-xs font-bold uppercase bg-zap/20"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleQuickAddCat}
+                          className="border-[2px] border-foreground bg-foreground text-background px-3 text-xs font-black uppercase"
+                        >
+                          SAVE
+                        </button>
+                      </div>
+                    ) : null}
+
                     <select
                       value={category}
-                      onChange={(e) => setCategory(e.target.value as ProductCategory)}
+                      onChange={(e) => setCategory(e.target.value)}
                       className="w-full border-[2px] border-foreground bg-smoke/40 p-3 text-xs font-bold uppercase"
                     >
-                      <option value="men">MEN</option>
-                      <option value="women">WOMEN</option>
-                      <option value="accessories">ACCESSORIES</option>
-                      <option value="footwear">FOOTWEAR</option>
-                      <option value="headwear">HEADWEAR</option>
+                      {categories.map((c) => (
+                        <option key={c.slug} value={c.slug}>
+                          {c.title.replace("\n", " ")}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
                   <div>
-                    <label className="label-xs block mb-1">CATEGORY LABEL</label>
+                    <label className="label-xs block mb-1">CATEGORY LABEL (SUBCATEGORY)</label>
                     <input
                       type="text"
+                      list="category-labels-list"
                       value={categoryLabel}
                       onChange={(e) => setCategoryLabel(e.target.value)}
                       placeholder="e.g. Outerwear"
                       className="w-full border-[2px] border-foreground bg-smoke/40 p-3 text-xs font-bold uppercase"
                     />
+                    <datalist id="category-labels-list">
+                      {categoryLabels.map((lbl) => (
+                        <option key={lbl} value={lbl} />
+                      ))}
+                    </datalist>
                   </div>
 
                   <div>
-                    <label className="label-xs block mb-1">SUBTITLE</label>
+                    <label className="label-xs block mb-1">SUBTITLE SPECIFICATION</label>
                     <input
                       type="text"
+                      list="subtitle-presets-list"
                       value={subtitle}
                       onChange={(e) => setSubtitle(e.target.value)}
                       placeholder="e.g. Black / Unisex"
                       className="w-full border-[2px] border-foreground bg-smoke/40 p-3 text-xs font-bold uppercase"
                     />
+                    <datalist id="subtitle-presets-list">
+                      {subtitlePresets.map((sub) => (
+                        <option key={sub} value={sub} />
+                      ))}
+                    </datalist>
                   </div>
                 </div>
               </div>

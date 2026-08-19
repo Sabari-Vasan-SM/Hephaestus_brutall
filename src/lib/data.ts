@@ -10,9 +10,17 @@ import catMen from "@/assets/cat-men.jpg";
 import catWomen from "@/assets/cat-women.jpg";
 import catAcc from "@/assets/cat-acc.jpg";
 
-export type Badge = "NEW" | "SALE" | "BESTSELLER" | "LIMITED" | "HOT" | "EXCLUSIVE";
+export type Badge = "NEW" | "SALE" | "BESTSELLER" | "LIMITED" | "HOT" | "EXCLUSIVE" | string;
 
-export type ProductCategory = "men" | "women" | "accessories" | "footwear" | "headwear";
+export type ProductCategory = string;
+
+export type CategoryItem = {
+  slug: string;
+  title: string;
+  image: string;
+  desc?: string;
+  count?: number;
+};
 
 export type Review = {
   id: string;
@@ -821,13 +829,43 @@ export const initialProducts: Product[] = [
   },
 ];
 
-export const categories: { slug: ProductCategory; title: string; image: string; count?: number }[] = [
-  { slug: "men", title: "MEN", image: catMen },
-  { slug: "women", title: "WOMEN", image: catWomen },
-  { slug: "accessories", title: "ACCESS-\nORIES", image: catAcc },
-  { slug: "footwear", title: "FOOT-\nWEAR", image: p4 },
-  { slug: "headwear", title: "HEAD-\nWEAR", image: p5 },
+export const categories: CategoryItem[] = [
+  { slug: "men", title: "MEN", image: catMen, desc: "Architectural proportions and raw drape." },
+  { slug: "women", title: "WOMEN", image: catWomen, desc: "Clean cuts and structured outerwear." },
+  { slug: "accessories", title: "ACCESS-\nORIES", image: catAcc, desc: "Bags, hardware, accessories." },
+  { slug: "footwear", title: "FOOT-\nWEAR", image: p4, desc: "Heavyweight vulcanized sneakers." },
+  { slug: "headwear", title: "HEAD-\nWEAR", image: p5, desc: "Brutal beanies and tactical caps." },
 ];
+
+export const initialCategoryLabels: string[] = [
+  "T-Shirts",
+  "Cargo Pants",
+  "Hoodies",
+  "Footwear",
+  "Accessories",
+  "Headwear",
+  "Jackets",
+  "Knitwear",
+  "Tactical Pants",
+  "Shades",
+  "Bags",
+  "Jewelry",
+];
+
+export const initialSubtitlePresets: string[] = [
+  "Washed Black / 280 GSM",
+  "Heavyweight Fleece / 450 GSM",
+  "Rigid Twill / Relaxed Fit",
+  "Electric Zap / Unisex",
+  "Tactical Ripstop",
+  "Architectural Oversized Cut",
+  "Garment Dyed Organic Cotton",
+  "Chunky Rubber Soles",
+  "100% Heavy Cotton Twill",
+];
+
+export const initialBadges: string[] = ["NEW", "SALE", "BESTSELLER", "LIMITED", "HOT", "EXCLUSIVE"];
+
 
 export const allSizes = [
   "XS",

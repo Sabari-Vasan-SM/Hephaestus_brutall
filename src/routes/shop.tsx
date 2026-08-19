@@ -74,7 +74,7 @@ export const Route = createFileRoute("/shop")({
 });
 
 function Shop() {
-  const { activeProducts } = useStore();
+  const { activeProducts, brands, categories } = useStore();
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/shop" });
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -113,19 +113,16 @@ function Shop() {
         out.sort((a, b) => b.rating - a.rating);
         break;
       case "new":
-        out.sort(
-          (a, b) =>
-            Number(b.newArrival || b.badges.includes("NEW")) -
-            Number(a.newArrival || a.badges.includes("NEW")),
-        );
-        break;
       default:
+        out.sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
         break;
     }
     return out;
   }, [activeProducts, search, maxPrice]);
 
-  const activeCount = [
+  const activeFilterCount = [
     search.category,
     search.brand,
     search.sale,
@@ -133,7 +130,7 @@ function Shop() {
     search.size,
     search.color,
     search.rating,
-    search.q,
+    search.maxPrice && search.maxPrice < MAX,
   ].filter(Boolean).length;
 
   const clearAll = () => navigate({ search: {}, resetScroll: false });
@@ -165,7 +162,7 @@ function Shop() {
                 active={search.category === c.slug}
                 onClick={() => set({ category: search.category === c.slug ? undefined : c.slug })}
               >
-                {c.slug.toUpperCase()} ({count})
+                {c.title ? c.title.replace("\n", " ").toUpperCase() : c.slug.toUpperCase()} ({count})
               </FilterButton>
             );
           })}
@@ -179,7 +176,7 @@ function Shop() {
           <FilterButton active={!search.brand} onClick={() => set({ brand: undefined })}>
             ALL LABELS
           </FilterButton>
-          {BRANDS.map((b) => (
+          {brands.map((b) => (
             <FilterButton
               key={b}
               active={search.brand === b}
