@@ -167,6 +167,127 @@ export type StoreSettings = {
   currency: string;
 };
 
+import heroImage from "@/assets/hero.jpg";
+
+export type HomeStat = {
+  value: string;
+  label: string;
+};
+
+export type ManifestoPillar = {
+  title: string;
+  desc: string;
+};
+
+export type SocialLink = {
+  label: string;
+  url: string;
+};
+
+export type HomeSectionConfig = {
+  hero: {
+    badge1: string;
+    badge2: string;
+    headingLine1: string;
+    headingLine2: string;
+    headingHighlight: string;
+    description: string;
+    ctaPrimaryText: string;
+    ctaPrimaryLink: string;
+    ctaSecondaryText: string;
+    ctaSecondaryLink: string;
+    stats: HomeStat[];
+    image: string;
+    sticker1: string;
+    sticker2: string;
+    sticker3: string;
+  };
+  marqueeTop: string[];
+  marqueeBottom: string[];
+  featuredTitle: string;
+  featuredKicker: string;
+  trendingTitle: string;
+  trendingKicker: string;
+  manifestoHeading: string;
+  manifestoPillars: ManifestoPillar[];
+  footer: {
+    tagline: string;
+    socials: SocialLink[];
+    copyright: string;
+    newsletterTitle: string;
+    newsletterText: string;
+  };
+};
+
+export const initialHomeConfig: HomeSectionConfig = {
+  hero: {
+    badge1: "DROP 04 / SS26",
+    badge2: "PIECES LIVE",
+    headingLine1: "New",
+    headingLine2: "Season.",
+    headingHighlight: "No rules.",
+    description:
+      "Independent streetwear engineered with heavy GSM fabrics and architectural silhouettes. Built to outlive fast fashion trends.",
+    ctaPrimaryText: "SHOP NEW DROP",
+    ctaPrimaryLink: "/shop",
+    ctaSecondaryText: "EXPLORE ALL PIECES",
+    ctaSecondaryLink: "/shop",
+    stats: [
+      { value: "300", label: "UNITS / DROP" },
+      { value: "4.8★", label: "CLIENT RATING" },
+      { value: "24-48H", label: "FAST DISPATCH" },
+    ],
+    image: heroImage,
+    sticker1: "LIMITED RUN",
+    sticker2: "RAW 280-450 GSM",
+    sticker3: "SS26 ARCHIVE",
+  },
+  marqueeTop: [
+    "ARCHITECTURAL SILHOUETTES",
+    "GARMENT DYED",
+    "YKK HARDWARE",
+    "ZERO FAST FASHION",
+    "BRUTAL. LABS",
+  ],
+  marqueeBottom: [
+    "FREE RETURNS",
+    "COD ACCEPTED",
+    "FAST EXPRESS DISPATCH",
+    "100% SECURE CHECKOUT",
+  ],
+  featuredTitle: "The drop.",
+  featuredKicker: "FEATURED PICKS",
+  trendingTitle: "TRENDING RIGHT NOW",
+  trendingKicker: "HIGH DEMAND",
+  manifestoHeading: "Built different.",
+  manifestoPillars: [
+    {
+      title: "LIMITED PRODUCTION RUNS",
+      desc: "Every single silhouette is crafted in runs of 300 or fewer units worldwide. Once archived, pieces never return.",
+    },
+    {
+      title: "HEAVYWEIGHT TEXTILES",
+      desc: "Nothing below 280 GSM. Custom loopback terry, 18oz duck canvas, and rigid Japanese denim.",
+    },
+    {
+      title: "STRUCTURAL MINIMALISM",
+      desc: "Zero loud exterior branding. The boxy drape and industrial finish define the piece.",
+    },
+  ],
+  footer: {
+    tagline: "We make everyday objects less boring.",
+    socials: [
+      { label: "INSTAGRAM", url: "https://instagram.com" },
+      { label: "X", url: "https://x.com" },
+      { label: "TIKTOK", url: "https://tiktok.com" },
+      { label: "YOUTUBE", url: "https://youtube.com" },
+    ],
+    copyright: "© 2026 BRUTAL. ALL RIGHTS RESERVED.",
+    newsletterTitle: "JOIN THE PRIVATE DROP LIST",
+    newsletterText: "Get secret early-access codes 2 hours before every limited run goes live.",
+  },
+};
+
 export const BRANDS = [
   "BRUTAL. LABS",
   "HEPHAESTUS",

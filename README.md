@@ -21,7 +21,15 @@ Access the dedicated Super Admin suite at `/superadmin`:
 ## ✨ Features & Architecture
 
 ### 1. Super Admin Management Suite (`/superadmin`)
+- **Visual Page Editor & CMS (`/superadmin/page-editor`)**:
+  - Full UI customization of Homepage Hero (badges, multiline typography, descriptions, CTAs, stat counters, image presets, custom image URLs, floating stickers).
+  - Scrolling Marquee Text editor (Add, edit, remove top & bottom scrolling phrases).
+  - Flash Promo & Offer Bar editor (toggle, custom discount text, direct links).
+  - Catalog Section Headings & Kickers (Featured Picks, Trending Radar).
+  - Brand Manifesto & Pillar Values editor (Heading + customizable cards).
+  - Footer & Social Handles editor (Multiline tagline, social URLs, newsletter text, and copyright).
 - **Executive Analytics Dashboard (`/superadmin`)**: Live gross merchandise value (GMV), total orders, units sold, low-stock alerts radar, and top-selling products.
+- **Dropdowns & Taxonomy Manager (`/superadmin/taxonomy`)**: Direct UI management for Brands, Primary Categories, Subcategories, Subtitles, and Badges.
 - **Product Catalog Manager (`/superadmin/products`)**:
   - Full CRUD: Create, Edit, Duplicate, Toggle Status (`Active`/`Draft`), Delete.
   - Multi-attribute filters: Category, Status, Stock Health, and Search.

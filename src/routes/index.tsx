@@ -28,11 +28,13 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const { activeProducts, state } = useStore();
+  const { activeProducts, state, categories, homeConfig } = useStore();
 
   const featured = activeProducts.filter((p) => p.featured).slice(0, 8);
   const trending = activeProducts.filter((p) => p.trending).slice(0, 4);
   const newArrivals = activeProducts.filter((p) => p.newArrival).slice(0, 4);
+
+  const hero = homeConfig.hero;
 
   return (
     <>
@@ -41,50 +43,49 @@ function Home() {
         <div className="mx-auto grid max-w-[1400px] gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-6 lg:px-10 lg:py-20">
           <div className="relative z-10">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="label-xs inline-block border-[3px] border-foreground bg-zap px-3 py-2">
-                DROP 04 / SS26
-              </span>
-              <span className="label-xs inline-block border-[2px] border-foreground bg-flare text-white px-2 py-1">
-                {activeProducts.length} PIECES LIVE
-              </span>
+              {hero.badge1 && (
+                <span className="label-xs inline-block border-[3px] border-foreground bg-zap px-3 py-2">
+                  {hero.badge1}
+                </span>
+              )}
+              {hero.badge2 && (
+                <span className="label-xs inline-block border-[2px] border-foreground bg-flare text-white px-2 py-1">
+                  {activeProducts.length} {hero.badge2}
+                </span>
+              )}
             </div>
             <h1 className="mt-6 text-[clamp(3.2rem,13vw,7.5rem)] leading-[0.88] tracking-tight">
-              New
+              {hero.headingLine1}
               <br />
-              Season.
+              {hero.headingLine2}
               <br />
-              <span className="bg-foreground px-3 text-background">No rules.</span>
+              <span className="bg-foreground px-3 text-background">{hero.headingHighlight}</span>
             </h1>
             <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Independent streetwear engineered with heavy GSM fabrics and architectural silhouettes.
-              Built to outlive fast fashion trends.
+              {hero.description}
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
-                to="/shop"
+                to={hero.ctaPrimaryLink || "/shop"}
                 search={{ sort: "new" }}
                 className="inline-flex items-center gap-2 border-[3px] border-foreground bg-flare px-6 py-4 text-sm font-black uppercase tracking-[0.08em] text-white press brutal-shadow"
               >
-                SHOP NEW DROP <ArrowRight width={18} height={18} strokeWidth={3} />
+                {hero.ctaPrimaryText} <ArrowRight width={18} height={18} strokeWidth={3} />
               </Link>
               <Link
-                to="/shop"
+                to={hero.ctaSecondaryLink || "/shop"}
                 search={{}}
                 className="inline-flex items-center gap-2 border-[3px] border-foreground bg-background px-6 py-4 text-sm font-black uppercase tracking-[0.08em] press brutal-shadow"
               >
-                EXPLORE ALL PIECES
+                {hero.ctaSecondaryText}
               </Link>
             </div>
 
             <dl className="mt-12 grid max-w-md grid-cols-3 gap-3">
-              {[
-                ["300", "UNITS / DROP"],
-                ["4.8★", "CLIENT RATING"],
-                ["24-48H", "FAST DISPATCH"],
-              ].map(([v, k]) => (
-                <div key={k} className="border-[3px] border-foreground bg-background p-3 brutal-shadow-sm">
-                  <dt className="font-display text-2xl font-black">{v}</dt>
-                  <dd className="label-xs mt-1 text-muted-foreground">{k}</dd>
+              {hero.stats.map((s, idx) => (
+                <div key={idx} className="border-[3px] border-foreground bg-background p-3 brutal-shadow-sm">
+                  <dt className="font-display text-2xl font-black">{s.value}</dt>
+                  <dd className="label-xs mt-1 text-muted-foreground">{s.label}</dd>
                 </div>
               ))}
             </dl>
@@ -104,26 +105,33 @@ function Home() {
               className="absolute -right-2 top-1/3 hidden h-24 w-24 dotgrid opacity-60 lg:block"
             />
             <img
-              src={heroImage}
-              alt="Model wearing an oversized all-black BRUTAL. outfit"
+              src={hero.image || heroImage}
+              alt="Hero Showcase"
               width={1008}
               height={1264}
               className="relative z-10 w-full border-[3px] border-foreground object-cover brutal-shadow-lg"
             />
-            <span className="absolute left-3 top-3 z-20 label-xs border-2 border-foreground bg-background px-2 py-1 font-black">
-              LIMITED RUN
-            </span>
-            <span className="absolute bottom-6 left-[-10px] z-20 label-xs border-2 border-foreground bg-zap px-2 py-1 font-black">
-              RAW 280-450 GSM
-            </span>
-            <span className="absolute right-4 top-8 z-20 label-xs border-2 border-foreground bg-foreground px-2 py-1 text-background font-black">
-              SS26 ARCHIVE
-            </span>
+            {hero.sticker1 && (
+              <span className="absolute left-3 top-3 z-20 label-xs border-2 border-foreground bg-background px-2 py-1 font-black">
+                {hero.sticker1}
+              </span>
+            )}
+            {hero.sticker2 && (
+              <span className="absolute bottom-6 left-[-10px] z-20 label-xs border-2 border-foreground bg-zap px-2 py-1 font-black">
+                {hero.sticker2}
+              </span>
+            )}
+            {hero.sticker3 && (
+              <span className="absolute right-4 top-8 z-20 label-xs border-2 border-foreground bg-foreground px-2 py-1 text-background font-black">
+                {hero.sticker3}
+              </span>
+            )}
           </div>
         </div>
       </section>
 
-      <Marquee items={["ARCHITECTURAL SILHOUETTES", "GARMENT DYED", "YKK HARDWARE", "ZERO FAST FASHION", "BRUTAL. LABS"]} />
+      {/* TOP SCROLLING MARQUEE */}
+      <Marquee items={homeConfig.marqueeTop} />
 
       {/* FLASH PROMO BANNER */}
       {state.settings.announcementActive && (
@@ -148,10 +156,8 @@ function Home() {
       {/* FEATURED DROPS */}
       <section className="mx-auto max-w-[1400px] px-4 py-14 sm:px-6 lg:px-10 lg:py-20">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
-          <SectionTitle kicker="FEATURED PICKS">
-            The
-            <br />
-            drop.
+          <SectionTitle kicker={homeConfig.featuredKicker}>
+            {homeConfig.featuredTitle}
           </SectionTitle>
           <Link
             to="/shop"
@@ -180,9 +186,9 @@ function Home() {
                   <Flame className="h-5 w-5 fill-white" />
                 </div>
                 <div>
-                  <span className="label-xs text-flare block font-black">HIGH DEMAND</span>
+                  <span className="label-xs text-flare block font-black">{homeConfig.trendingKicker}</span>
                   <h2 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
-                    TRENDING RIGHT NOW
+                    {homeConfig.trendingTitle}
                   </h2>
                 </div>
               </div>
@@ -252,32 +258,24 @@ function Home() {
 
       {/* BRAND MANIFESTO */}
       <section className="mx-auto grid max-w-[1400px] gap-8 px-4 py-14 sm:px-6 lg:grid-cols-[1fr_1fr] lg:px-10 lg:py-20">
-        <h2 className="text-[clamp(2.5rem,8vw,5rem)] leading-[0.9] font-black uppercase font-display">
-          Built
-          <br />
-          different.
+        <h2 className="text-[clamp(2.5rem,8vw,5rem)] leading-[0.9] font-black uppercase font-display whitespace-pre-line">
+          {homeConfig.manifestoHeading}
         </h2>
         <div className="grid gap-4">
-          {[
-            [
-              "LIMITED PRODUCTION RUNS",
-              "Every single silhouette is crafted in runs of 300 or fewer units worldwide. Once archived, pieces never return.",
-            ],
-            ["HEAVYWEIGHT TEXTILES", "Nothing below 280 GSM. Custom loopback terry, 18oz duck canvas, and rigid Japanese denim."],
-            ["STRUCTURAL MINIMALISM", "Zero loud exterior branding. The boxy drape and industrial finish define the piece."],
-          ].map(([t, d]) => (
+          {homeConfig.manifestoPillars.map((p, idx) => (
             <div
-              key={t}
+              key={idx}
               className="border-[3px] border-foreground bg-background p-5 brutal-shadow-sm"
             >
-              <h3 className="font-display text-lg font-black uppercase">{t}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{d}</p>
+              <h3 className="font-display text-lg font-black uppercase">{p.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{p.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <Marquee items={["FREE RETURNS", "COD ACCEPTED", "FAST EXPRESS DISPATCH", "100% SECURE CHECKOUT"]} invert />
+      {/* BOTTOM SCROLLING MARQUEE */}
+      <Marquee items={homeConfig.marqueeBottom} invert />
     </>
   );
 }

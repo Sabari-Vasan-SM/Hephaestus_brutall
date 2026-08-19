@@ -24,6 +24,7 @@ import { Route as SuperadminIndexRouteImport } from './routes/superadmin.index'
 import { Route as SuperadminCustomersRouteImport } from './routes/superadmin.customers'
 import { Route as SuperadminInventoryRouteImport } from './routes/superadmin.inventory'
 import { Route as SuperadminLoginRouteImport } from './routes/superadmin.login'
+import { Route as SuperadminPageEditorRouteImport } from './routes/superadmin.page-editor'
 import { Route as SuperadminSettingsRouteImport } from './routes/superadmin.settings'
 import { Route as SuperadminTaxonomyRouteImport } from './routes/superadmin.taxonomy'
 import { Route as SuperadminOrdersIndexRouteImport } from './routes/superadmin.orders.index'
@@ -107,6 +108,11 @@ const SuperadminLoginRoute = SuperadminLoginRouteImport.update({
   path: '/superadmin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SuperadminPageEditorRoute = SuperadminPageEditorRouteImport.update({
+  id: '/superadmin/page-editor',
+  path: '/superadmin/page-editor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SuperadminSettingsRoute = SuperadminSettingsRouteImport.update({
   id: '/superadmin/settings',
   path: '/superadmin/settings',
@@ -159,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/superadmin/customers': typeof SuperadminCustomersRoute
   '/superadmin/inventory': typeof SuperadminInventoryRoute
   '/superadmin/login': typeof SuperadminLoginRoute
+  '/superadmin/page-editor': typeof SuperadminPageEditorRoute
   '/superadmin/settings': typeof SuperadminSettingsRoute
   '/superadmin/taxonomy': typeof SuperadminTaxonomyRoute
   '/superadmin/': typeof SuperadminIndexRoute
@@ -183,6 +190,7 @@ export interface FileRoutesByTo {
   '/superadmin/customers': typeof SuperadminCustomersRoute
   '/superadmin/inventory': typeof SuperadminInventoryRoute
   '/superadmin/login': typeof SuperadminLoginRoute
+  '/superadmin/page-editor': typeof SuperadminPageEditorRoute
   '/superadmin/settings': typeof SuperadminSettingsRoute
   '/superadmin/taxonomy': typeof SuperadminTaxonomyRoute
   '/superadmin': typeof SuperadminIndexRoute
@@ -208,6 +216,7 @@ export interface FileRoutesById {
   '/superadmin/customers': typeof SuperadminCustomersRoute
   '/superadmin/inventory': typeof SuperadminInventoryRoute
   '/superadmin/login': typeof SuperadminLoginRoute
+  '/superadmin/page-editor': typeof SuperadminPageEditorRoute
   '/superadmin/settings': typeof SuperadminSettingsRoute
   '/superadmin/taxonomy': typeof SuperadminTaxonomyRoute
   '/superadmin/': typeof SuperadminIndexRoute
@@ -234,6 +243,7 @@ export interface FileRouteTypes {
     | '/superadmin/customers'
     | '/superadmin/inventory'
     | '/superadmin/login'
+    | '/superadmin/page-editor'
     | '/superadmin/settings'
     | '/superadmin/taxonomy'
     | '/superadmin/'
@@ -258,6 +268,7 @@ export interface FileRouteTypes {
     | '/superadmin/customers'
     | '/superadmin/inventory'
     | '/superadmin/login'
+    | '/superadmin/page-editor'
     | '/superadmin/settings'
     | '/superadmin/taxonomy'
     | '/superadmin'
@@ -282,6 +293,7 @@ export interface FileRouteTypes {
     | '/superadmin/customers'
     | '/superadmin/inventory'
     | '/superadmin/login'
+    | '/superadmin/page-editor'
     | '/superadmin/settings'
     | '/superadmin/taxonomy'
     | '/superadmin/'
@@ -307,6 +319,7 @@ export interface RootRouteChildren {
   SuperadminCustomersRoute: typeof SuperadminCustomersRoute
   SuperadminInventoryRoute: typeof SuperadminInventoryRoute
   SuperadminLoginRoute: typeof SuperadminLoginRoute
+  SuperadminPageEditorRoute: typeof SuperadminPageEditorRoute
   SuperadminSettingsRoute: typeof SuperadminSettingsRoute
   SuperadminTaxonomyRoute: typeof SuperadminTaxonomyRoute
   SuperadminIndexRoute: typeof SuperadminIndexRoute
@@ -424,6 +437,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperadminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/superadmin/page-editor': {
+      id: '/superadmin/page-editor'
+      path: '/superadmin/page-editor'
+      fullPath: '/superadmin/page-editor'
+      preLoaderRoute: typeof SuperadminPageEditorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/superadmin/settings': {
       id: '/superadmin/settings'
       path: '/superadmin/settings'
@@ -491,6 +511,7 @@ const rootRouteChildren: RootRouteChildren = {
   SuperadminCustomersRoute: SuperadminCustomersRoute,
   SuperadminInventoryRoute: SuperadminInventoryRoute,
   SuperadminLoginRoute: SuperadminLoginRoute,
+  SuperadminPageEditorRoute: SuperadminPageEditorRoute,
   SuperadminSettingsRoute: SuperadminSettingsRoute,
   SuperadminTaxonomyRoute: SuperadminTaxonomyRoute,
   SuperadminIndexRoute: SuperadminIndexRoute,

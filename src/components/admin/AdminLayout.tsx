@@ -7,6 +7,7 @@ import {
   Users,
   Settings,
   FolderTree,
+  LayoutTemplate,
   ExternalLink,
   LogOut,
   Menu,
@@ -27,6 +28,7 @@ interface AdminLayoutProps {
 
 const navItems = [
   { href: "/superadmin", label: "DASHBOARD", icon: LayoutDashboard, exact: true },
+  { href: "/superadmin/page-editor", label: "HOME & PAGE EDITOR", icon: LayoutTemplate },
   { href: "/superadmin/products", label: "PRODUCTS", icon: Package },
   { href: "/superadmin/inventory", label: "INVENTORY", icon: Boxes },
   { href: "/superadmin/orders", label: "ORDERS", icon: ShoppingBag },

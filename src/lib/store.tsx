@@ -14,6 +14,7 @@ import {
   initialCoupons,
   initialInventoryLogs,
   initialStoreSettings,
+  initialHomeConfig,
   BRANDS,
   categories as defaultCategories,
   initialCategoryLabels,
@@ -29,6 +30,7 @@ import {
   type Address,
   type Review,
   type CategoryItem,
+  type HomeSectionConfig,
 } from "./data";
 
 export type CartItem = {
@@ -62,6 +64,7 @@ type State = {
   coupons: Coupon[];
   settings: StoreSettings;
   taxonomy: TaxonomyState;
+  homeConfig: HomeSectionConfig;
   cart: CartItem[];
   wishlist: string[];
   user: CustomerUser | null;
@@ -85,6 +88,7 @@ const DEFAULT_STATE: State = {
     subtitlePresets: [...initialSubtitlePresets],
     badges: [...initialBadges],
   },
+  homeConfig: initialHomeConfig,
   cart: [],
   wishlist: [],
   user: null,
@@ -168,6 +172,10 @@ type StoreCtx = {
   deleteSubtitlePreset: (subtitle: string) => void;
   addBadge: (badge: string) => void;
   deleteBadge: (badge: string) => void;
+  // Homepage & Page Customization CMS
+  homeConfig: HomeSectionConfig;
+  updateHomeConfig: (config: Partial<HomeSectionConfig>) => void;
+  resetHomeConfig: () => void;
 };
 
 
@@ -194,6 +202,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           inventoryLogs: parsed.inventoryLogs && parsed.inventoryLogs.length > 0 ? parsed.inventoryLogs : initialInventoryLogs,
           settings: parsed.settings ? { ...initialStoreSettings, ...parsed.settings } : initialStoreSettings,
           taxonomy: parsed.taxonomy && parsed.taxonomy.brands ? parsed.taxonomy : DEFAULT_STATE.taxonomy,
+          homeConfig: parsed.homeConfig && parsed.homeConfig.hero ? parsed.homeConfig : initialHomeConfig,
         });
       }
     } catch {
@@ -1032,6 +1041,28 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
+  const updateHomeConfig = useCallback((newConfig: Partial<HomeSectionConfig>) => {
+    setState((s) => {
+      const current = s.homeConfig ?? initialHomeConfig;
+      return {
+        ...s,
+        homeConfig: {
+          ...current,
+          ...newConfig,
+          hero: newConfig.hero ? { ...current.hero, ...newConfig.hero } : current.hero,
+          footer: newConfig.footer ? { ...current.footer, ...newConfig.footer } : current.footer,
+        },
+      };
+    });
+  }, []);
+
+  const resetHomeConfig = useCallback(() => {
+    setState((s) => ({
+      ...s,
+      homeConfig: initialHomeConfig,
+    }));
+  }, []);
+
   const resetToDemoData = useCallback(() => {
     setState({
       ...DEFAULT_STATE,
@@ -1041,6 +1072,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       customers: initialCustomers,
       coupons: initialCoupons,
       settings: initialStoreSettings,
+      homeConfig: initialHomeConfig,
     });
     localStorage.removeItem(STORAGE_KEY);
   }, []);
@@ -1106,6 +1138,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     deleteSubtitlePreset,
     addBadge,
     deleteBadge,
+    // Homepage & Page Customization CMS
+    homeConfig: state.homeConfig ?? initialHomeConfig,
+    updateHomeConfig,
+    resetHomeConfig,
   };
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
