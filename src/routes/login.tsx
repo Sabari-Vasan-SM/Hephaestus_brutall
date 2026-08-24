@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, UserCheck, KeyRound } from "lucide-react";
+import { ArrowRight, KeyRound, ShieldCheck, User } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -27,11 +27,22 @@ const schema = z.object({
 });
 
 function Login() {
-  const { loginCustomer, state } = useStore();
+  const { loginCustomer, adminLogin, state } = useStore();
   const navigate = useNavigate();
+  const [isAdminMode, setIsAdminMode] = useState(false);
   const [values, setValues] = useState({ email: "alex@example.com", password: "password123" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+
+  const switchMode = (admin: boolean) => {
+    setIsAdminMode(admin);
+    setErrors({});
+    setValues(
+      admin
+        ? { email: "admin@brutal.com", password: "admin123" }
+        : { email: "alex@example.com", password: "password123" },
+    );
+  };
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,14 +57,28 @@ function Login() {
     setLoading(true);
 
     window.setTimeout(() => {
-      const res = loginCustomer(parsed.data.email, parsed.data.password);
-      setLoading(false);
-
-      if (res.ok) {
-        toast.success("WELCOME BACK", { description: `Signed in as ${res.user?.name}` });
-        navigate({ to: "/account" });
+      if (isAdminMode) {
+        // Super Admin Login
+        const res = adminLogin(parsed.data.email, parsed.data.password);
+        setLoading(false);
+        if (res.ok) {
+          toast.success("ADMIN ACCESS GRANTED", {
+            description: "Welcome to the BRUTAL. Command Center.",
+          });
+          navigate({ to: "/superadmin" });
+        } else {
+          toast.error("ADMIN AUTH FAILED", { description: res.message });
+        }
       } else {
-        toast.error("SIGN IN FAILED", { description: res.message });
+        // Customer Login
+        const res = loginCustomer(parsed.data.email, parsed.data.password);
+        setLoading(false);
+        if (res.ok) {
+          toast.success("WELCOME BACK", { description: `Signed in as ${res.user?.name}` });
+          navigate({ to: "/account" });
+        } else {
+          toast.error("SIGN IN FAILED", { description: res.message });
+        }
       }
     }, 400);
   };
@@ -65,20 +90,80 @@ function Login() {
 
   return (
     <div className="mx-auto grid max-w-md px-4 py-14 sm:px-6">
+      {/* Mode Toggle Tabs */}
+      <div className="mb-6 flex border-[3px] border-foreground">
+        <button
+          type="button"
+          onClick={() => switchMode(false)}
+          className={`flex flex-1 items-center justify-center gap-2 py-3 text-xs font-black uppercase transition-colors press ${
+            !isAdminMode
+              ? "bg-foreground text-background"
+              : "bg-background text-foreground hover:bg-smoke"
+          }`}
+        >
+          <User className="h-3.5 w-3.5" />
+          CUSTOMER
+        </button>
+        <button
+          type="button"
+          onClick={() => switchMode(true)}
+          className={`flex flex-1 items-center justify-center gap-2 py-3 text-xs font-black uppercase transition-colors press border-l-[3px] border-foreground ${
+            isAdminMode
+              ? "bg-foreground text-background"
+              : "bg-background text-foreground hover:bg-smoke"
+          }`}
+        >
+          <ShieldCheck className="h-3.5 w-3.5" />
+          ADMIN
+        </button>
+      </div>
+
       <header className="mb-6">
-        <span className="label-xs bg-foreground px-2 py-1 text-background">MEMBERSHIP</span>
-        <h1 className="mt-4 text-[clamp(2.5rem,10vw,4.5rem)] font-display font-black uppercase leading-[0.9] tracking-tight">
-          Welcome
-          <br />
-          back.
-        </h1>
-        <p className="mt-3 text-xs text-muted-foreground">Sign in to track live drops and dispatches.</p>
+        {isAdminMode ? (
+          <>
+            <span className="label-xs bg-foreground px-2 py-1 text-background">
+              COMMAND CENTER
+            </span>
+            <h1 className="mt-4 text-[clamp(2rem,10vw,4rem)] font-display font-black uppercase leading-[0.9] tracking-tight">
+              Admin
+              <br />
+              Access.
+            </h1>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Super Admin credentials required.
+            </p>
+          </>
+        ) : (
+          <>
+            <span className="label-xs bg-foreground px-2 py-1 text-background">MEMBERSHIP</span>
+            <h1 className="mt-4 text-[clamp(2.5rem,10vw,4.5rem)] font-display font-black uppercase leading-[0.9] tracking-tight">
+              Welcome
+              <br />
+              back.
+            </h1>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Sign in to track live drops and dispatches.
+            </p>
+          </>
+        )}
       </header>
 
       <form
         onSubmit={submit}
-        className="space-y-4 border-[3px] border-foreground bg-background p-6 brutal-shadow"
+        className={`space-y-4 border-[3px] p-6 brutal-shadow ${
+          isAdminMode ? "border-foreground bg-foreground/5" : "border-foreground bg-background"
+        }`}
       >
+        {/* Admin mode indicator strip */}
+        {isAdminMode && (
+          <div className="flex items-center gap-2 border-[2px] border-foreground bg-foreground px-3 py-2">
+            <ShieldCheck className="h-4 w-4 text-zap flex-shrink-0" />
+            <span className="text-[0.65rem] font-black uppercase text-background tracking-widest">
+              SUPER ADMIN MODE — RESTRICTED ACCESS
+            </span>
+          </div>
+        )}
+
         <Field label="EMAIL ADDRESS" error={errors["email"]}>
           <Input
             type="email"
@@ -100,39 +185,67 @@ function Login() {
           />
         </Field>
 
-        <Button type="submit" variant="flare" size="lg" full disabled={loading} className="text-xs font-black uppercase text-white hover:bg-black py-4">
-          {loading ? "AUTHENTICATING…" : "SIGN IN"}{" "}
+        <Button
+          type="submit"
+          variant="flare"
+          size="lg"
+          full
+          disabled={loading}
+          className={`text-xs font-black uppercase py-4 ${
+            isAdminMode
+              ? "!bg-foreground !text-background hover:!bg-zinc-700"
+              : "text-white hover:bg-black"
+          }`}
+        >
+          {loading ? "AUTHENTICATING…" : isAdminMode ? "ACCESS COMMAND CENTER" : "SIGN IN"}{" "}
           <ArrowRight width={16} height={16} strokeWidth={3} />
         </Button>
 
-        {/* 1-Click Demo Profiles */}
-        <div className="border-t border-zinc-200 pt-4 space-y-2">
-          <span className="label-xs text-muted-foreground block flex items-center gap-1.5">
-            <KeyRound className="h-3 w-3" />
-            1-CLICK DEMO CLIENT PROFILES:
-          </span>
-          <div className="grid grid-cols-3 gap-1.5 text-center">
-            {state.customers.slice(0, 3).map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => handleSelectDemoUser(c.email)}
-                className="border border-foreground bg-smoke/80 py-1.5 text-[0.65rem] font-bold uppercase hover:bg-zap press truncate px-1"
-              >
-                {c.name.split(" ")[0]}
-              </button>
-            ))}
+        {/* 1-Click Demo Profiles — Customer mode only */}
+        {!isAdminMode && (
+          <div className="border-t border-zinc-200 pt-4 space-y-2">
+            <span className="label-xs text-muted-foreground block flex items-center gap-1.5">
+              <KeyRound className="h-3 w-3" />
+              1-CLICK DEMO CLIENT PROFILES:
+            </span>
+            <div className="grid grid-cols-3 gap-1.5 text-center">
+              {state.customers.slice(0, 3).map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => handleSelectDemoUser(c.email)}
+                  className="border border-foreground bg-smoke/80 py-1.5 text-[0.65rem] font-bold uppercase hover:bg-zap press truncate px-1"
+                >
+                  {c.name.split(" ")[0]}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        <p className="label-xs pt-2 text-muted-foreground text-center">
-          NEW TO BRUTAL.?{" "}
-          <Link to="/signup" className="text-flare underline font-black">
-            CREATE ACCOUNT
-          </Link>
-        </p>
+        {/* Admin quick-fill */}
+        {isAdminMode && (
+          <div className="border-t border-zinc-700 pt-4">
+            <button
+              type="button"
+              onClick={() => setValues({ email: "admin@brutal.com", password: "admin123" })}
+              className="w-full border-[2px] border-foreground bg-zap py-2 text-[0.65rem] font-black uppercase press hover:bg-foreground hover:text-background"
+            >
+              ⚡ AUTOFILL DEMO ADMIN
+            </button>
+          </div>
+        )}
+
+        {/* Customer: link to signup */}
+        {!isAdminMode && (
+          <p className="label-xs pt-2 text-muted-foreground text-center">
+            NEW TO BRUTAL.?{" "}
+            <Link to="/signup" className="text-flare underline font-black">
+              CREATE ACCOUNT
+            </Link>
+          </p>
+        )}
       </form>
     </div>
   );
 }
-
