@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { ImageUploader } from "@/components/admin/ImageUploader";
 import { useStore } from "@/lib/store";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -593,26 +594,17 @@ function EditProductPage() {
               </div>
             </div>
 
-            {/* Imagery */}
+            {/* Imagery & Upload */}
             <div className="border-[3px] border-foreground bg-background p-6 brutal-shadow space-y-4">
-              <h3 className="font-display text-sm font-black uppercase border-b-[2px] border-foreground pb-2">
-                IMAGERY
-              </h3>
-              <img src={image} alt="Preview" className="h-48 w-full object-cover border-2 border-foreground" />
-              <div className="grid grid-cols-4 gap-2">
-                {presetImages.map((img, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => setImage(img.src)}
-                    className={`border-[2px] p-0.5 press ${
-                      image === img.src ? "border-flare ring-2 ring-flare" : "border-foreground"
-                    }`}
-                  >
-                    <img src={img.src} alt={img.label} className="h-12 w-full object-cover" />
-                  </button>
-                ))}
-              </div>
+              <ImageUploader
+                value={image}
+                onChange={(newImg) => {
+                  setImage(newImg);
+                  setGallery([newImg, p7, p3]);
+                }}
+                label="PRODUCT COVER IMAGE"
+                presetImages={presetImages}
+              />
             </div>
 
             {/* Save and Delete Actions */}

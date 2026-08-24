@@ -8,6 +8,8 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { type ReactNode } from "react";
+import { ConvexProvider } from "convex/react";
+import { convex } from "@/lib/convex";
 
 import appCss from "../styles.css?url";
 import { Navbar } from "@/components/Navbar";
@@ -127,17 +129,19 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <StoreProvider>
-        <div className="flex min-h-screen flex-col">
-          <Navbar />
-          <main className="flex-1">
-            {/* Required: nested routes render here. */}
-            <Outlet />
-          </main>
-          <Footer />
-        </div>
-        <Toaster position="top-right" />
-      </StoreProvider>
+      <ConvexProvider client={convex}>
+        <StoreProvider>
+          <div className="flex min-h-screen flex-col">
+            <Navbar />
+            <main className="flex-1">
+              {/* Required: nested routes render here. */}
+              <Outlet />
+            </main>
+            <Footer />
+          </div>
+          <Toaster position="top-right" />
+        </StoreProvider>
+      </ConvexProvider>
     </QueryClientProvider>
   );
 }

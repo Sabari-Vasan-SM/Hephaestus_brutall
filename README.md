@@ -18,6 +18,34 @@ Access the dedicated Super Admin suite at `/superadmin`:
 
 ---
 
+## ⚡ Convex Real-time Backend & Database Architecture
+
+The application is powered by a **Convex real-time reactive backend**:
+
+### 📊 Database Schema (`convex/schema.ts`)
+* **`products`**: Full catalog entities with SKU indexes, categories, gallery arrays, materials, review aggregations, and stock counters.
+* **`orders`**: Real-time order fulfillment pipeline with customer details, order timeline event logs, and status progression.
+* **`inventoryLogs`**: Immutable chronological stock audit ledger tracking every purchase, restock, manual adjustment, and order cancellation restore.
+* **`customers`**: Registered customer accounts, multiple shipping addresses, and order history associations.
+* **`coupons`**: Discount engine supporting percentage and flat promo codes with minOrder thresholds and active toggles.
+* **`taxonomy`**: Dynamic dropdowns for brands, categories, category labels, subtitle presets, and badges.
+* **`homeConfig`**: Live CMS homepage editor storing hero typography, CTA buttons, stats, marquee items, manifesto pillars, and footer configuration.
+* **`storeSettings`**: Global configuration for announcement banners, shipping thresholds, and support contacts.
+* **`admins`**: Super Admin authentication credentials and session controls.
+
+### 🛠️ Convex Backend Functions
+* **`convex/products.ts`**: `list`, `listActive`, `getById`, `create`, `update`, `remove`, `duplicate`, `toggleStatus`, `addReview`.
+* **`convex/orders.ts`**: `list`, `listByCustomer`, `getById`, `placeOrder` (atomic stock deduction + log creation), `updateStatus`, `cancelOrder` (with automatic inventory rollback), `getMetrics`.
+* **`convex/inventory.ts`**: `listStock`, `listLogs`, `updateStock`, `adjustStock`.
+* **`convex/customers.ts`**: `list`, `getByEmail`, `register`, `login`, `updateProfile`, `addAddress`, `deleteAddress`, `setDefaultAddress`.
+* **`convex/coupons.ts`**: `list`, `validate`, `create`, `remove`, `toggleStatus`.
+* **`convex/taxonomy.ts`**: `get`, `addBrand`, `deleteBrand`, `addCategory`, `deleteCategory`, `addCategoryLabel`, `deleteCategoryLabel`, `addSubtitlePreset`, `deleteSubtitlePreset`, `addBadge`, `deleteBadge`.
+* **`convex/homeConfig.ts`**: `get`, `update`, `reset`.
+* **`convex/settings.ts`**: `get`, `update`, `seed`, `resetToDemoData`.
+* **`convex/admin.ts`**: `login`, `getSession`.
+
+---
+
 ## ✨ Features & Architecture
 
 ### 1. Super Admin Management Suite (`/superadmin`)
