@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useStore } from "@/lib/store";
 import { toast } from "sonner";
 import { ShieldCheck, KeyRound, Lock, ArrowRight } from "lucide-react";
@@ -22,9 +22,11 @@ function SuperAdminLoginPage() {
   const [loading, setLoading] = useState(false);
 
   // If already logged in, redirect to dashboard
-  if (adminSession?.loggedIn) {
-    navigate({ to: "/superadmin" });
-  }
+  useEffect(() => {
+    if (adminSession?.loggedIn) {
+      navigate({ to: "/superadmin" });
+    }
+  }, [adminSession, navigate]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
