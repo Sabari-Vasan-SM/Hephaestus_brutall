@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { ImageUploader } from "@/components/admin/ImageUploader";
 import { useStore } from "@/lib/store";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -425,61 +426,31 @@ export function AdminPageEditor() {
               </h3>
 
               <div className="space-y-4">
-                <div className="aspect-[4/5] border-[3px] border-foreground overflow-hidden bg-smoke relative">
-                  <img
-                    src={customImageUrl.trim() ? customImageUrl : heroImage}
-                    alt="Preview"
-                    className="w-full h-full object-cover"
+                <div className="relative">
+                  <ImageUploader
+                    value={customImageUrl.trim() ? customImageUrl : heroImage}
+                    onChange={(newImg) => {
+                      setHeroImage(newImg);
+                      setCustomImageUrl("");
+                    }}
+                    label="HERO COVER IMAGE"
+                    presetImages={presetHeroImages}
                   />
                   {sticker1 && (
-                    <span className="absolute left-2 top-2 label-xs border-2 border-foreground bg-background px-2 py-0.5 font-black">
+                    <span className="absolute left-2 top-8 label-xs border-2 border-foreground bg-background px-2 py-0.5 font-black z-10 pointer-events-none">
                       {sticker1}
                     </span>
                   )}
                   {sticker2 && (
-                    <span className="absolute bottom-4 left-2 label-xs border-2 border-foreground bg-zap px-2 py-0.5 font-black">
+                    <span className="absolute bottom-24 left-2 label-xs border-2 border-foreground bg-zap px-2 py-0.5 font-black z-10 pointer-events-none">
                       {sticker2}
                     </span>
                   )}
                   {sticker3 && (
-                    <span className="absolute right-2 top-4 label-xs border-2 border-foreground bg-foreground text-background px-2 py-0.5 font-black">
+                    <span className="absolute right-2 top-8 label-xs border-2 border-foreground bg-foreground text-background px-2 py-0.5 font-black z-10 pointer-events-none">
                       {sticker3}
                     </span>
                   )}
-                </div>
-
-                <div>
-                  <label className="label-xs block mb-1">SELECT PRESET IMAGE</label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {presetHeroImages.map((img) => (
-                      <button
-                        key={img.label}
-                        type="button"
-                        onClick={() => {
-                          setHeroImage(img.src);
-                          setCustomImageUrl("");
-                        }}
-                        className={`border-[2px] p-1 text-[0.6rem] font-bold uppercase transition-colors ${
-                          heroImage === img.src && !customImageUrl
-                            ? "border-flare bg-flare text-white"
-                            : "border-foreground bg-smoke hover:bg-zap"
-                        }`}
-                      >
-                        {img.label.split(" ")[0]}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="label-xs block mb-1">OR ENTER CUSTOM IMAGE URL</label>
-                  <input
-                    type="url"
-                    value={customImageUrl}
-                    onChange={(e) => setCustomImageUrl(e.target.value)}
-                    placeholder="https://images.unsplash.com/..."
-                    className="w-full border-[2px] border-foreground p-2 text-xs font-mono"
-                  />
                 </div>
 
                 <div className="space-y-2 border-t-[2px] border-foreground pt-3">

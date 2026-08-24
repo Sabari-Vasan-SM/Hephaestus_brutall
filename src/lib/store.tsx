@@ -7,6 +7,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/lib/api";
 import {
   initialProducts,
   initialOrders,
@@ -122,8 +124,16 @@ type StoreCtx = {
   trackRecentlyViewed: (id: string) => void;
   addReview: (productId: string, review: Omit<Review, "id" | "date">) => void;
   // Customer Auth & Account
-  registerCustomer: (name: string, email: string, password?: string, phone?: string) => { ok: boolean; message: string; user?: CustomerUser };
-  loginCustomer: (email: string, password?: string) => { ok: boolean; message: string; user?: CustomerUser };
+  registerCustomer: (
+    name: string,
+    email: string,
+    password?: string,
+    phone?: string
+  ) => { ok: boolean; message: string; user?: CustomerUser };
+  loginCustomer: (
+    email: string,
+    password?: string
+  ) => { ok: boolean; message: string; user?: CustomerUser };
   logoutCustomer: () => void;
   updateProfile: (data: Partial<Pick<CustomerUser, "name" | "phone" | "email">>) => void;
   addAddress: (address: Address) => void;
@@ -178,12 +188,72 @@ type StoreCtx = {
   resetHomeConfig: () => void;
 };
 
-
 const StoreContext = createContext<StoreCtx | null>(null);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<State>(DEFAULT_STATE);
   const [ready, setReady] = useState(false);
+
+  // Convex Live Real-Time Subscriptions
+  let convexProducts: any = undefined;
+  let convexOrders: any = undefined;
+  let convexInventoryLogs: any = undefined;
+  let convexCustomers: any = undefined;
+  let convexCoupons: any = undefined;
+  let convexTaxonomy: any = undefined;
+  let convexHomeConfig: any = undefined;
+  let convexSettings: any = undefined;
+
+  try {
+    convexProducts = useQuery(api.products.list, {});
+    convexOrders = useQuery(api.orders.list, {});
+    convexInventoryLogs = useQuery(api.inventory.listLogs, {});
+    convexCustomers = useQuery(api.customers.list, {});
+    convexCoupons = useQuery(api.coupons.list, {});
+    convexTaxonomy = useQuery(api.taxonomy.get, {});
+    convexHomeConfig = useQuery(api.homeConfig.get, {});
+    convexSettings = useQuery(api.settings.get, {});
+  } catch {
+    // Graceful fallback if convex client not connected
+  }
+
+  // Convex Mutations
+  const convexAddProduct = useMutation(api.products.create);
+  const convexUpdateProduct = useMutation(api.products.update);
+  const convexDeleteProduct = useMutation(api.products.remove);
+  const convexDuplicateProduct = useMutation(api.products.duplicate);
+  const convexToggleProductStatus = useMutation(api.products.toggleStatus);
+  const convexAddReview = useMutation(api.products.addReview);
+  const convexPlaceOrder = useMutation(api.orders.placeOrder);
+  const convexUpdateOrderStatus = useMutation(api.orders.updateStatus);
+  const convexCancelOrder = useMutation(api.orders.cancelOrder);
+  const convexUpdateStock = useMutation(api.inventory.updateStock);
+  const convexAdjustStock = useMutation(api.inventory.adjustStock);
+  const convexRegisterCustomer = useMutation(api.customers.register);
+  const convexLoginCustomer = useMutation(api.customers.login);
+  const convexUpdateCustomerProfile = useMutation(api.customers.updateProfile);
+  const convexAddCustomerAddress = useMutation(api.customers.addAddress);
+  const convexDeleteCustomerAddress = useMutation(api.customers.deleteAddress);
+  const convexSetDefaultCustomerAddress = useMutation(api.customers.setDefaultAddress);
+  const convexAddCoupon = useMutation(api.coupons.create);
+  const convexDeleteCoupon = useMutation(api.coupons.remove);
+  const convexToggleCouponStatus = useMutation(api.coupons.toggleStatus);
+  const convexAddBrand = useMutation(api.taxonomy.addBrand);
+  const convexDeleteBrand = useMutation(api.taxonomy.deleteBrand);
+  const convexAddCategory = useMutation(api.taxonomy.addCategory);
+  const convexDeleteCategory = useMutation(api.taxonomy.deleteCategory);
+  const convexAddCategoryLabel = useMutation(api.taxonomy.addCategoryLabel);
+  const convexDeleteCategoryLabel = useMutation(api.taxonomy.deleteCategoryLabel);
+  const convexAddSubtitlePreset = useMutation(api.taxonomy.addSubtitlePreset);
+  const convexDeleteSubtitlePreset = useMutation(api.taxonomy.deleteSubtitlePreset);
+  const convexAddBadge = useMutation(api.taxonomy.addBadge);
+  const convexDeleteBadge = useMutation(api.taxonomy.deleteBadge);
+  const convexUpdateHomeConfig = useMutation(api.homeConfig.update);
+  const convexResetHomeConfig = useMutation(api.homeConfig.reset);
+  const convexUpdateSettings = useMutation(api.settings.update);
+  const convexResetToDemoData = useMutation(api.settings.resetToDemoData);
+  const convexAdminLogin = useMutation(api.admin.login);
+  const convexSeed = useMutation(api.settings.seed);
 
   // Initialize from LocalStorage or Seed Data
   useEffect(() => {
@@ -194,7 +264,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         setState({
           ...DEFAULT_STATE,
           ...parsed,
-          // Ensure products array has valid seed if empty
           products: parsed.products && parsed.products.length > 0 ? parsed.products : initialProducts,
           orders: parsed.orders && parsed.orders.length > 0 ? parsed.orders : initialOrders,
           customers: parsed.customers && parsed.customers.length > 0 ? parsed.customers : initialCustomers,
@@ -220,6 +289,62 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       /* storage limit exceeded */
     }
   }, [state, ready]);
+
+  // Synchronize Convex Real-Time Queries into local reactive state
+  useEffect(() => {
+    if (convexProducts && Array.isArray(convexProducts) && convexProducts.length > 0) {
+      setState((prev) => ({ ...prev, products: convexProducts as Product[] }));
+    }
+  }, [convexProducts]);
+
+  useEffect(() => {
+    if (convexOrders && Array.isArray(convexOrders) && convexOrders.length > 0) {
+      setState((prev) => ({ ...prev, orders: convexOrders as Order[] }));
+    }
+  }, [convexOrders]);
+
+  useEffect(() => {
+    if (convexInventoryLogs && Array.isArray(convexInventoryLogs) && convexInventoryLogs.length > 0) {
+      setState((prev) => ({ ...prev, inventoryLogs: convexInventoryLogs as InventoryLog[] }));
+    }
+  }, [convexInventoryLogs]);
+
+  useEffect(() => {
+    if (convexCustomers && Array.isArray(convexCustomers) && convexCustomers.length > 0) {
+      setState((prev) => ({ ...prev, customers: convexCustomers as CustomerUser[] }));
+    }
+  }, [convexCustomers]);
+
+  useEffect(() => {
+    if (convexCoupons && Array.isArray(convexCoupons) && convexCoupons.length > 0) {
+      setState((prev) => ({ ...prev, coupons: convexCoupons as Coupon[] }));
+    }
+  }, [convexCoupons]);
+
+  useEffect(() => {
+    if (convexTaxonomy && convexTaxonomy.brands) {
+      setState((prev) => ({ ...prev, taxonomy: convexTaxonomy as TaxonomyState }));
+    }
+  }, [convexTaxonomy]);
+
+  useEffect(() => {
+    if (convexHomeConfig && convexHomeConfig.hero) {
+      setState((prev) => ({ ...prev, homeConfig: convexHomeConfig as HomeSectionConfig }));
+    }
+  }, [convexHomeConfig]);
+
+  useEffect(() => {
+    if (convexSettings && convexSettings.storeName) {
+      setState((prev) => ({ ...prev, settings: { ...initialStoreSettings, ...convexSettings } }));
+    }
+  }, [convexSettings]);
+
+  // Auto-seed Convex database if empty
+  useEffect(() => {
+    try {
+      convexSeed().catch(() => {});
+    } catch {}
+  }, [convexSeed]);
 
   // Sync across browser tabs
   useEffect(() => {
@@ -247,143 +372,208 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   );
 
   // Dynamic Taxonomy State Handlers
-  const addBrand = useCallback((brand: string) => {
-    const trimmed = brand.trim();
-    if (!trimmed) return;
-    setState((s) => {
-      const existing = s.taxonomy?.brands ?? [...BRANDS];
-      if (existing.includes(trimmed)) return s;
-      return {
-        ...s,
-        taxonomy: {
-          ...s.taxonomy,
-          brands: [...existing, trimmed],
-        },
-      };
-    });
-  }, []);
-
-  const deleteBrand = useCallback((brand: string) => {
-    setState((s) => ({
-      ...s,
-      taxonomy: {
-        ...s.taxonomy,
-        brands: (s.taxonomy?.brands ?? [...BRANDS]).filter((b) => b !== brand),
-      },
-    }));
-  }, []);
-
-  const addCategory = useCallback((category: CategoryItem) => {
-    const slug = category.slug.toLowerCase().trim();
-    if (!slug) return;
-    setState((s) => {
-      const existing = s.taxonomy?.categories ?? [...defaultCategories];
-      if (existing.some((c) => c.slug === slug)) {
+  const addBrand = useCallback(
+    (brand: string) => {
+      const trimmed = brand.trim();
+      if (!trimmed) return;
+      try {
+        convexAddBrand({ brand: trimmed }).catch(() => {});
+      } catch {}
+      setState((s) => {
+        const existing = s.taxonomy?.brands ?? [...BRANDS];
+        if (existing.includes(trimmed)) return s;
         return {
           ...s,
           taxonomy: {
             ...s.taxonomy,
-            categories: existing.map((c) => (c.slug === slug ? { ...c, ...category } : c)),
+            brands: [...existing, trimmed],
           },
         };
-      }
-      return {
+      });
+    },
+    [convexAddBrand],
+  );
+
+  const deleteBrand = useCallback(
+    (brand: string) => {
+      try {
+        convexDeleteBrand({ brand }).catch(() => {});
+      } catch {}
+      setState((s) => ({
         ...s,
         taxonomy: {
           ...s.taxonomy,
-          categories: [...existing, { ...category, slug }],
+          brands: (s.taxonomy?.brands ?? [...BRANDS]).filter((b) => b !== brand),
         },
-      };
-    });
-  }, []);
+      }));
+    },
+    [convexDeleteBrand],
+  );
 
-  const deleteCategory = useCallback((slug: string) => {
-    setState((s) => ({
-      ...s,
-      taxonomy: {
-        ...s.taxonomy,
-        categories: (s.taxonomy?.categories ?? [...defaultCategories]).filter((c) => c.slug !== slug),
-      },
-    }));
-  }, []);
+  const addCategory = useCallback(
+    (category: CategoryItem) => {
+      const slug = category.slug.toLowerCase().trim();
+      if (!slug) return;
+      try {
+        convexAddCategory({
+          slug,
+          title: category.title,
+          image: category.image,
+          desc: category.desc,
+        }).catch(() => {});
+      } catch {}
+      setState((s) => {
+        const existing = s.taxonomy?.categories ?? [...defaultCategories];
+        if (existing.some((c) => c.slug === slug)) {
+          return {
+            ...s,
+            taxonomy: {
+              ...s.taxonomy,
+              categories: existing.map((c) => (c.slug === slug ? { ...c, ...category } : c)),
+            },
+          };
+        }
+        return {
+          ...s,
+          taxonomy: {
+            ...s.taxonomy,
+            categories: [...existing, { ...category, slug }],
+          },
+        };
+      });
+    },
+    [convexAddCategory],
+  );
 
-  const addCategoryLabel = useCallback((label: string) => {
-    const trimmed = label.trim();
-    if (!trimmed) return;
-    setState((s) => {
-      const existing = s.taxonomy?.categoryLabels ?? [...initialCategoryLabels];
-      if (existing.includes(trimmed)) return s;
-      return {
+  const deleteCategory = useCallback(
+    (slug: string) => {
+      try {
+        convexDeleteCategory({ slug }).catch(() => {});
+      } catch {}
+      setState((s) => ({
         ...s,
         taxonomy: {
           ...s.taxonomy,
-          categoryLabels: [...existing, trimmed],
+          categories: (s.taxonomy?.categories ?? [...defaultCategories]).filter((c) => c.slug !== slug),
         },
-      };
-    });
-  }, []);
+      }));
+    },
+    [convexDeleteCategory],
+  );
 
-  const deleteCategoryLabel = useCallback((label: string) => {
-    setState((s) => ({
-      ...s,
-      taxonomy: {
-        ...s.taxonomy,
-        categoryLabels: (s.taxonomy?.categoryLabels ?? [...initialCategoryLabels]).filter((l) => l !== label),
-      },
-    }));
-  }, []);
+  const addCategoryLabel = useCallback(
+    (label: string) => {
+      const trimmed = label.trim();
+      if (!trimmed) return;
+      try {
+        convexAddCategoryLabel({ label: trimmed }).catch(() => {});
+      } catch {}
+      setState((s) => {
+        const existing = s.taxonomy?.categoryLabels ?? [...initialCategoryLabels];
+        if (existing.includes(trimmed)) return s;
+        return {
+          ...s,
+          taxonomy: {
+            ...s.taxonomy,
+            categoryLabels: [...existing, trimmed],
+          },
+        };
+      });
+    },
+    [convexAddCategoryLabel],
+  );
 
-  const addSubtitlePreset = useCallback((subtitle: string) => {
-    const trimmed = subtitle.trim();
-    if (!trimmed) return;
-    setState((s) => {
-      const existing = s.taxonomy?.subtitlePresets ?? [...initialSubtitlePresets];
-      if (existing.includes(trimmed)) return s;
-      return {
+  const deleteCategoryLabel = useCallback(
+    (label: string) => {
+      try {
+        convexDeleteCategoryLabel({ label }).catch(() => {});
+      } catch {}
+      setState((s) => ({
         ...s,
         taxonomy: {
           ...s.taxonomy,
-          subtitlePresets: [...existing, trimmed],
+          categoryLabels: (s.taxonomy?.categoryLabels ?? [...initialCategoryLabels]).filter((l) => l !== label),
         },
-      };
-    });
-  }, []);
+      }));
+    },
+    [convexDeleteCategoryLabel],
+  );
 
-  const deleteSubtitlePreset = useCallback((subtitle: string) => {
-    setState((s) => ({
-      ...s,
-      taxonomy: {
-        ...s.taxonomy,
-        subtitlePresets: (s.taxonomy?.subtitlePresets ?? [...initialSubtitlePresets]).filter((st) => st !== subtitle),
-      },
-    }));
-  }, []);
+  const addSubtitlePreset = useCallback(
+    (subtitle: string) => {
+      const trimmed = subtitle.trim();
+      if (!trimmed) return;
+      try {
+        convexAddSubtitlePreset({ subtitle: trimmed }).catch(() => {});
+      } catch {}
+      setState((s) => {
+        const existing = s.taxonomy?.subtitlePresets ?? [...initialSubtitlePresets];
+        if (existing.includes(trimmed)) return s;
+        return {
+          ...s,
+          taxonomy: {
+            ...s.taxonomy,
+            subtitlePresets: [...existing, trimmed],
+          },
+        };
+      });
+    },
+    [convexAddSubtitlePreset],
+  );
 
-  const addBadge = useCallback((badge: string) => {
-    const trimmed = badge.toUpperCase().trim();
-    if (!trimmed) return;
-    setState((s) => {
-      const existing = s.taxonomy?.badges ?? [...initialBadges];
-      if (existing.includes(trimmed)) return s;
-      return {
+  const deleteSubtitlePreset = useCallback(
+    (subtitle: string) => {
+      try {
+        convexDeleteSubtitlePreset({ subtitle }).catch(() => {});
+      } catch {}
+      setState((s) => ({
         ...s,
         taxonomy: {
           ...s.taxonomy,
-          badges: [...existing, trimmed],
+          subtitlePresets: (s.taxonomy?.subtitlePresets ?? [...initialSubtitlePresets]).filter((st) => st !== subtitle),
         },
-      };
-    });
-  }, []);
+      }));
+    },
+    [convexDeleteSubtitlePreset],
+  );
 
-  const deleteBadge = useCallback((badge: string) => {
-    setState((s) => ({
-      ...s,
-      taxonomy: {
-        ...s.taxonomy,
-        badges: (s.taxonomy?.badges ?? [...initialBadges]).filter((b) => b !== badge),
-      },
-    }));
-  }, []);
+  const addBadge = useCallback(
+    (badge: string) => {
+      const trimmed = badge.toUpperCase().trim();
+      if (!trimmed) return;
+      try {
+        convexAddBadge({ badge: trimmed }).catch(() => {});
+      } catch {}
+      setState((s) => {
+        const existing = s.taxonomy?.badges ?? [...initialBadges];
+        if (existing.includes(trimmed)) return s;
+        return {
+          ...s,
+          taxonomy: {
+            ...s.taxonomy,
+            badges: [...existing, trimmed],
+          },
+        };
+      });
+    },
+    [convexAddBadge],
+  );
+
+  const deleteBadge = useCallback(
+    (badge: string) => {
+      try {
+        convexDeleteBadge({ badge }).catch(() => {});
+      } catch {}
+      setState((s) => ({
+        ...s,
+        taxonomy: {
+          ...s.taxonomy,
+          badges: (s.taxonomy?.badges ?? [...initialBadges]).filter((b) => b !== badge),
+        },
+      }));
+    },
+    [convexDeleteBadge],
+  );
 
   // CART LOGIC
   const addToCart = useCallback((product: Product, size: string, color: string, qty = 1) => {
@@ -487,31 +677,43 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const clearCoupon = useCallback(() => setState((s) => ({ ...s, coupon: null })), []);
 
   // REVIEWS
-  const addReview = useCallback((productId: string, reviewInput: Omit<Review, "id" | "date">) => {
-    const newRev: Review = {
-      id: "rev-" + Math.random().toString(36).slice(2, 9),
-      name: reviewInput.name,
-      rating: reviewInput.rating,
-      body: reviewInput.body,
-      date: new Date()
-        .toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
-        .toUpperCase(),
-    };
-    setState((s) => ({
-      ...s,
-      products: s.products.map((p) => {
-        if (p.id !== productId) return p;
-        const allRevs = [newRev, ...p.reviews];
-        const newRating = Number((allRevs.reduce((sum, r) => sum + r.rating, 0) / allRevs.length).toFixed(1));
-        return {
-          ...p,
-          reviews: allRevs,
-          reviewCount: allRevs.length,
-          rating: newRating,
-        };
-      }),
-    }));
-  }, []);
+  const addReview = useCallback(
+    (productId: string, reviewInput: Omit<Review, "id" | "date">) => {
+      try {
+        convexAddReview({
+          productId,
+          name: reviewInput.name,
+          rating: reviewInput.rating,
+          body: reviewInput.body,
+        }).catch(() => {});
+      } catch {}
+
+      const newRev: Review = {
+        id: "rev-" + Math.random().toString(36).slice(2, 9),
+        name: reviewInput.name,
+        rating: reviewInput.rating,
+        body: reviewInput.body,
+        date: new Date()
+          .toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
+          .toUpperCase(),
+      };
+      setState((s) => ({
+        ...s,
+        products: s.products.map((p) => {
+          if (p.id !== productId) return p;
+          const allRevs = [newRev, ...p.reviews];
+          const newRating = Number((allRevs.reduce((sum, r) => sum + r.rating, 0) / allRevs.length).toFixed(1));
+          return {
+            ...p,
+            reviews: allRevs,
+            reviewCount: allRevs.length,
+            rating: newRating,
+          };
+        }),
+      }));
+    },
+    [convexAddReview],
+  );
 
   // CUSTOMER AUTH & ACCOUNT
   const registerCustomer = useCallback(
@@ -520,6 +722,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       if (state.customers.some((c) => c.email.toLowerCase() === cleanEmail)) {
         return { ok: false, message: "An account with this email already exists" };
       }
+
+      try {
+        convexRegisterCustomer({
+          name: name.trim(),
+          email: cleanEmail,
+          password,
+          phone: phone.trim(),
+        }).catch(() => {});
+      } catch {}
+
       const newUser: CustomerUser = {
         id: "usr-" + Math.random().toString(36).slice(2, 9),
         name: name.trim(),
@@ -537,15 +749,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       }));
       return { ok: true, message: "Account created successfully", user: newUser };
     },
-    [state.customers],
+    [state.customers, convexRegisterCustomer],
   );
 
   const loginCustomer = useCallback(
     (email: string, password = "") => {
       const cleanEmail = email.trim().toLowerCase();
+      try {
+        convexLoginCustomer({ email: cleanEmail, password }).catch(() => {});
+      } catch {}
+
       const existing = state.customers.find((c) => c.email.toLowerCase() === cleanEmail);
       if (!existing) {
-        // Auto-register demo if convenient or allow login
         return { ok: false, message: "No account found with this email address." };
       }
       if (password && existing.password && existing.password !== password) {
@@ -554,67 +769,112 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       setState((s) => ({ ...s, user: existing }));
       return { ok: true, message: "Logged in successfully", user: existing };
     },
-    [state.customers],
+    [state.customers, convexLoginCustomer],
   );
 
   const logoutCustomer = useCallback(() => {
     setState((s) => ({ ...s, user: null }));
   }, []);
 
-  const updateProfile = useCallback((data: Partial<Pick<CustomerUser, "name" | "phone" | "email">>) => {
-    setState((s) => {
-      if (!s.user) return s;
-      const updatedUser = { ...s.user, ...data };
-      return {
-        ...s,
-        user: updatedUser,
-        customers: s.customers.map((c) => (c.id === updatedUser.id ? updatedUser : c)),
-      };
-    });
-  }, []);
+  const updateProfile = useCallback(
+    (data: Partial<Pick<CustomerUser, "name" | "phone" | "email">>) => {
+      if (state.user) {
+        try {
+          convexUpdateCustomerProfile({
+            email: state.user.email,
+            name: data.name || state.user.name,
+            phone: data.phone || state.user.phone,
+          }).catch(() => {});
+        } catch {}
+      }
+      setState((s) => {
+        if (!s.user) return s;
+        const updatedUser = { ...s.user, ...data };
+        return {
+          ...s,
+          user: updatedUser,
+          customers: s.customers.map((c) => (c.id === updatedUser.id ? updatedUser : c)),
+        };
+      });
+    },
+    [state.user, convexUpdateCustomerProfile],
+  );
 
-  const addAddress = useCallback((address: Address) => {
-    const newAddr: Address = {
-      ...address,
-      id: "addr-" + Math.random().toString(36).slice(2, 8),
-    };
-    setState((s) => {
-      if (!s.user) return s;
-      const addresses = [newAddr, ...s.user.addresses];
-      const updatedUser = { ...s.user, addresses };
-      return {
-        ...s,
-        user: updatedUser,
-        customers: s.customers.map((c) => (c.id === updatedUser.id ? updatedUser : c)),
+  const addAddress = useCallback(
+    (address: Address) => {
+      const newAddr: Address = {
+        ...address,
+        id: "addr-" + Math.random().toString(36).slice(2, 8),
       };
-    });
-  }, []);
+      if (state.user) {
+        try {
+          convexAddCustomerAddress({
+            email: state.user.email,
+            address: newAddr,
+          }).catch(() => {});
+        } catch {}
+      }
+      setState((s) => {
+        if (!s.user) return s;
+        const addresses = [newAddr, ...s.user.addresses];
+        const updatedUser = { ...s.user, addresses };
+        return {
+          ...s,
+          user: updatedUser,
+          customers: s.customers.map((c) => (c.id === updatedUser.id ? updatedUser : c)),
+        };
+      });
+    },
+    [state.user, convexAddCustomerAddress],
+  );
 
-  const deleteAddress = useCallback((index: number) => {
-    setState((s) => {
-      if (!s.user) return s;
-      const addresses = s.user.addresses.filter((_, i) => i !== index);
-      const defaultAddressIndex = Math.max(0, Math.min(s.user.defaultAddressIndex, addresses.length - 1));
-      const updatedUser = { ...s.user, addresses, defaultAddressIndex };
-      return {
-        ...s,
-        user: updatedUser,
-        customers: s.customers.map((c) => (c.id === updatedUser.id ? updatedUser : c)),
-      };
-    });
-  }, []);
+  const deleteAddress = useCallback(
+    (index: number) => {
+      if (state.user) {
+        try {
+          convexDeleteCustomerAddress({
+            email: state.user.email,
+            addressIndex: index,
+          }).catch(() => {});
+        } catch {}
+      }
+      setState((s) => {
+        if (!s.user) return s;
+        const addresses = s.user.addresses.filter((_, i) => i !== index);
+        const defaultAddressIndex = Math.max(0, Math.min(s.user.defaultAddressIndex, addresses.length - 1));
+        const updatedUser = { ...s.user, addresses, defaultAddressIndex };
+        return {
+          ...s,
+          user: updatedUser,
+          customers: s.customers.map((c) => (c.id === updatedUser.id ? updatedUser : c)),
+        };
+      });
+    },
+    [state.user, convexDeleteCustomerAddress],
+  );
 
-  const setDefaultAddress = useCallback((index: number) => {
-    setState((s) => {
-      if (!s.user) return s;
-      const updatedUser = { ...s.user, defaultAddressIndex: index };
-      return {
-        ...s,
-        user: updatedUser,
-        customers: s.customers.map((c) => (c.id === updatedUser.id ? updatedUser : c)),
-      };
-    });
-  }, []);
+  const setDefaultAddress = useCallback(
+    (index: number) => {
+      if (state.user) {
+        try {
+          convexSetDefaultCustomerAddress({
+            email: state.user.email,
+            addressIndex: index,
+          }).catch(() => {});
+        } catch {}
+      }
+      setState((s) => {
+        if (!s.user) return s;
+        const updatedUser = { ...s.user, defaultAddressIndex: index };
+        return {
+          ...s,
+          user: updatedUser,
+          customers: s.customers.map((c) => (c.id === updatedUser.id ? updatedUser : c)),
+        };
+      });
+    },
+    [state.user, convexSetDefaultCustomerAddress],
+  );
 
   // ORDERS & CHECKOUT
   const placeOrder = useCallback(
@@ -649,6 +909,26 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         .toUpperCase();
 
       const orderId = "BRT-" + Math.floor(100000 + Math.random() * 900000);
+
+      // Trigger Convex PlaceOrder Mutation in background
+      try {
+        convexPlaceOrder({
+          customerName: input.customerName,
+          email: input.email,
+          phone: input.phone,
+          items,
+          subtotal: totals.subtotal,
+          shipping: totals.shipping,
+          discount: totals.discount,
+          couponCode: state.coupon ?? undefined,
+          total: totals.total,
+          paymentMethod: input.paymentMethod,
+          paymentStatus: input.paymentMethod === "COD" ? "PENDING" : "PAID",
+          address: input.address,
+          delivery: input.delivery,
+          eta: etaStr,
+        }).catch(() => {});
+      } catch {}
 
       const newOrder: Order = {
         id: orderId,
@@ -716,11 +996,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
       return newOrder;
     },
-    [cartLines, totals, state.coupon, state.coupons, state.products],
+    [cartLines, totals, state.coupon, state.coupons, state.products, convexPlaceOrder],
   );
 
   const cancelOrder = useCallback(
     (orderId: string, reason = "Cancelled by user") => {
+      try {
+        convexCancelOrder({ orderId, reason }).catch(() => {});
+      } catch {}
+
       const now = new Date();
       const dateStr = now
         .toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
@@ -777,24 +1061,31 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       }));
       return true;
     },
-    [state.orders, state.products],
+    [state.orders, state.products, convexCancelOrder],
   );
 
   // SUPER ADMIN ACTIONS
-  const adminLogin = useCallback((email: string, password: string) => {
-    const cleanEmail = email.trim().toLowerCase();
-    if (cleanEmail === "admin@brutal.com" && password === "admin123") {
-      const session: AdminSession = {
-        loggedIn: true,
-        email: "admin@brutal.com",
-        name: "Head of Operations",
-        role: "superadmin",
-      };
-      setState((s) => ({ ...s, adminSession: session }));
-      return { ok: true, message: "Welcome to BRUTAL. Command Center" };
-    }
-    return { ok: false, message: "Invalid administrator credentials." };
-  }, []);
+  const adminLogin = useCallback(
+    (email: string, password: string) => {
+      const cleanEmail = email.trim().toLowerCase();
+      try {
+        convexAdminLogin({ email: cleanEmail, password }).catch(() => {});
+      } catch {}
+
+      if (cleanEmail === "admin@brutal.com" && password === "admin123") {
+        const session: AdminSession = {
+          loggedIn: true,
+          email: "admin@brutal.com",
+          name: "Head of Operations",
+          role: "superadmin",
+        };
+        setState((s) => ({ ...s, adminSession: session }));
+        return { ok: true, message: "Welcome to BRUTAL. Command Center" };
+      }
+      return { ok: false, message: "Invalid administrator credentials." };
+    },
+    [convexAdminLogin],
+  );
 
   const adminLogout = useCallback(() => {
     setState((s) => ({ ...s, adminSession: null }));
@@ -802,6 +1093,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const addProduct = useCallback(
     (data: Omit<Product, "id" | "createdAt" | "rating" | "reviewCount" | "reviews">) => {
+      try {
+        convexAddProduct(data).catch(() => {});
+      } catch {}
+
       const newId = "prod-" + Math.random().toString(36).slice(2, 9);
       const newProduct: Product = {
         ...data,
@@ -829,27 +1124,45 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       }));
       return newProduct;
     },
-    [],
+    [convexAddProduct],
   );
 
-  const updateProduct = useCallback((id: string, data: Partial<Product>) => {
-    setState((s) => ({
-      ...s,
-      products: s.products.map((p) => (p.id === id ? { ...p, ...data } : p)),
-    }));
-  }, []);
+  const updateProduct = useCallback(
+    (id: string, data: Partial<Product>) => {
+      try {
+        convexUpdateProduct({ id, ...data }).catch(() => {});
+      } catch {}
 
-  const deleteProduct = useCallback((id: string) => {
-    setState((s) => ({
-      ...s,
-      products: s.products.filter((p) => p.id !== id),
-      cart: s.cart.filter((c) => c.productId !== id),
-      wishlist: s.wishlist.filter((w) => w !== id),
-    }));
-  }, []);
+      setState((s) => ({
+        ...s,
+        products: s.products.map((p) => (p.id === id ? { ...p, ...data } : p)),
+      }));
+    },
+    [convexUpdateProduct],
+  );
+
+  const deleteProduct = useCallback(
+    (id: string) => {
+      try {
+        convexDeleteProduct({ id }).catch(() => {});
+      } catch {}
+
+      setState((s) => ({
+        ...s,
+        products: s.products.filter((p) => p.id !== id),
+        cart: s.cart.filter((c) => c.productId !== id),
+        wishlist: s.wishlist.filter((w) => w !== id),
+      }));
+    },
+    [convexDeleteProduct],
+  );
 
   const duplicateProduct = useCallback(
     (id: string) => {
+      try {
+        convexDuplicateProduct({ id }).catch(() => {});
+      } catch {}
+
       const target = state.products.find((p) => p.id === id);
       if (!target) return undefined;
       const dup: Product = {
@@ -866,20 +1179,31 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       setState((s) => ({ ...s, products: [dup, ...s.products] }));
       return dup;
     },
-    [state.products],
+    [state.products, convexDuplicateProduct],
   );
 
-  const toggleProductStatus = useCallback((id: string) => {
-    setState((s) => ({
-      ...s,
-      products: s.products.map((p) =>
-        p.id === id ? { ...p, status: p.status === "active" ? "draft" : "active" } : p,
-      ),
-    }));
-  }, []);
+  const toggleProductStatus = useCallback(
+    (id: string) => {
+      try {
+        convexToggleProductStatus({ id }).catch(() => {});
+      } catch {}
+
+      setState((s) => ({
+        ...s,
+        products: s.products.map((p) =>
+          p.id === id ? { ...p, status: p.status === "active" ? "draft" : "active" } : p,
+        ),
+      }));
+    },
+    [convexToggleProductStatus],
+  );
 
   const updateStock = useCallback(
     (productId: string, newStock: number, note = "Manual stock update by Admin") => {
+      try {
+        convexUpdateStock({ productId, newStock, note }).catch(() => {});
+      } catch {}
+
       setState((s) => {
         const product = s.products.find((p) => p.id === productId);
         if (!product) return s;
@@ -902,11 +1226,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         };
       });
     },
-    [],
+    [convexUpdateStock],
   );
 
   const adjustStock = useCallback(
     (productId: string, delta: number, note = "Stock delta adjustment") => {
+      try {
+        convexAdjustStock({ productId, delta, note }).catch(() => {});
+      } catch {}
+
       setState((s) => {
         const product = s.products.find((p) => p.id === productId);
         if (!product) return s;
@@ -929,11 +1257,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         };
       });
     },
-    [],
+    [convexAdjustStock],
   );
 
   const updateOrderStatus = useCallback(
     (orderId: string, status: OrderStatus, note = "") => {
+      try {
+        convexUpdateOrderStatus({ orderId, status, note }).catch(() => {});
+      } catch {}
+
       const now = new Date();
       const dateStr = now
         .toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
@@ -1008,62 +1340,104 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         };
       });
     },
-    [],
+    [convexUpdateOrderStatus],
   );
 
-  const addCoupon = useCallback((couponInput: Omit<Coupon, "id" | "usageCount">) => {
-    const newCoupon: Coupon = {
-      ...couponInput,
-      code: couponInput.code.toUpperCase().trim(),
-      id: "cpn-" + Math.random().toString(36).slice(2, 8),
-      usageCount: 0,
-    };
-    setState((s) => ({ ...s, coupons: [newCoupon, ...s.coupons] }));
-  }, []);
+  const addCoupon = useCallback(
+    (couponInput: Omit<Coupon, "id" | "usageCount">) => {
+      try {
+        convexAddCoupon({
+          code: couponInput.code,
+          type: couponInput.type,
+          value: couponInput.value,
+          minOrder: couponInput.minOrder,
+        }).catch(() => {});
+      } catch {}
 
-  const deleteCoupon = useCallback((id: string) => {
-    setState((s) => ({ ...s, coupons: s.coupons.filter((c) => c.id !== id) }));
-  }, []);
-
-  const toggleCouponStatus = useCallback((id: string) => {
-    setState((s) => ({
-      ...s,
-      coupons: s.coupons.map((c) =>
-        c.id === id ? { ...c, status: c.status === "active" ? "expired" : "active" } : c,
-      ),
-    }));
-  }, []);
-
-  const updateSettings = useCallback((newSettings: Partial<StoreSettings>) => {
-    setState((s) => ({
-      ...s,
-      settings: { ...s.settings, ...newSettings },
-    }));
-  }, []);
-
-  const updateHomeConfig = useCallback((newConfig: Partial<HomeSectionConfig>) => {
-    setState((s) => {
-      const current = s.homeConfig ?? initialHomeConfig;
-      return {
-        ...s,
-        homeConfig: {
-          ...current,
-          ...newConfig,
-          hero: newConfig.hero ? { ...current.hero, ...newConfig.hero } : current.hero,
-          footer: newConfig.footer ? { ...current.footer, ...newConfig.footer } : current.footer,
-        },
+      const newCoupon: Coupon = {
+        ...couponInput,
+        code: couponInput.code.toUpperCase().trim(),
+        id: "cpn-" + Math.random().toString(36).slice(2, 8),
+        usageCount: 0,
       };
-    });
-  }, []);
+      setState((s) => ({ ...s, coupons: [newCoupon, ...s.coupons] }));
+    },
+    [convexAddCoupon],
+  );
+
+  const deleteCoupon = useCallback(
+    (id: string) => {
+      try {
+        convexDeleteCoupon({ id }).catch(() => {});
+      } catch {}
+      setState((s) => ({ ...s, coupons: s.coupons.filter((c) => c.id !== id) }));
+    },
+    [convexDeleteCoupon],
+  );
+
+  const toggleCouponStatus = useCallback(
+    (id: string) => {
+      try {
+        convexToggleCouponStatus({ id }).catch(() => {});
+      } catch {}
+      setState((s) => ({
+        ...s,
+        coupons: s.coupons.map((c) =>
+          c.id === id ? { ...c, status: c.status === "active" ? "expired" : "active" } : c,
+        ),
+      }));
+    },
+    [convexToggleCouponStatus],
+  );
+
+  const updateSettings = useCallback(
+    (newSettings: Partial<StoreSettings>) => {
+      try {
+        convexUpdateSettings(newSettings).catch(() => {});
+      } catch {}
+      setState((s) => ({
+        ...s,
+        settings: { ...s.settings, ...newSettings },
+      }));
+    },
+    [convexUpdateSettings],
+  );
+
+  const updateHomeConfig = useCallback(
+    (newConfig: Partial<HomeSectionConfig>) => {
+      try {
+        convexUpdateHomeConfig(newConfig).catch(() => {});
+      } catch {}
+      setState((s) => {
+        const current = s.homeConfig ?? initialHomeConfig;
+        return {
+          ...s,
+          homeConfig: {
+            ...current,
+            ...newConfig,
+            hero: newConfig.hero ? { ...current.hero, ...newConfig.hero } : current.hero,
+            footer: newConfig.footer ? { ...current.footer, ...newConfig.footer } : current.footer,
+          },
+        };
+      });
+    },
+    [convexUpdateHomeConfig],
+  );
 
   const resetHomeConfig = useCallback(() => {
+    try {
+      convexResetHomeConfig().catch(() => {});
+    } catch {}
     setState((s) => ({
       ...s,
       homeConfig: initialHomeConfig,
     }));
-  }, []);
+  }, [convexResetHomeConfig]);
 
   const resetToDemoData = useCallback(() => {
+    try {
+      convexResetToDemoData().catch(() => {});
+    } catch {}
     setState({
       ...DEFAULT_STATE,
       products: initialProducts,
@@ -1075,7 +1449,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       homeConfig: initialHomeConfig,
     });
     localStorage.removeItem(STORAGE_KEY);
-  }, []);
+  }, [convexResetToDemoData]);
 
   const value: StoreCtx = {
     ready,
@@ -1152,4 +1526,3 @@ export function useStore() {
   if (!ctx) throw new Error("useStore must be used inside StoreProvider");
   return ctx;
 }
-
